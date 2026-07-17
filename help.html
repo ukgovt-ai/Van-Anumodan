@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0f2e26">
+<title>Van Anumodan — Help &amp; FAQ</title>
+<style>
+:root{
+  --pine:#0f2e26;--pine2:#143b30;--pine3:#1c4c3e;--paper:#f4f2ea;--card:#fff;
+  --ink:#1b241f;--muted:#5f6b63;--line:#dbd7c8;--line2:#e8e5d9;--brass:#b1832f;--brass-d:#8a6522;
+  --ok:#1f7a4d;--ok-bg:#e3efe7;--warn:#b0761a;--warn-bg:#f7ecd4;--bad:#b0261d;--bad-bg:#f6e0dd;--neu-bg:#eceadf;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--sans);background:var(--paper);color:var(--ink);line-height:1.55;font-size:16px;padding-bottom:env(safe-area-inset-bottom)}
+h1,h2,h3{margin:0;letter-spacing:-.01em}
+a{color:var(--pine3)}
+header{background:var(--pine);color:#eef3ef;border-bottom:3px solid var(--brass)}
+.head-in{max-width:820px;margin:0 auto;padding:16px 18px;display:flex;align-items:center;gap:14px;padding-top:calc(16px + env(safe-area-inset-top))}
+.seal{width:46px;height:46px;border-radius:50%;overflow:hidden;background:#fff;flex:0 0 auto}
+.seal img{width:100%;height:100%;object-fit:cover;display:block}
+.brand h1{font-size:19px;color:#fff}
+.brand .sub{font-size:12px;color:#9fc0b1;margin-top:2px}
+main{max-width:820px;margin:0 auto;padding:22px 18px 70px}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--brass-d)}
+.lead{font-size:16px;color:var(--muted);margin:8px 0 4px;max-width:64ch}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:20px 0}
+.toc h2{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--pine3);margin-bottom:10px}
+.toc ol{margin:0;padding-left:20px;columns:2;column-gap:26px}
+.toc li{margin:3px 0;font-size:14px;break-inside:avoid}
+@media(max-width:560px){.toc ol{columns:1}}
+section.qa{margin:26px 0}
+section.qa>h2{font-size:20px;padding-bottom:8px;border-bottom:2px solid var(--pine);margin-bottom:14px}
+.q{font-weight:650;font-size:16.5px;margin:18px 0 4px;color:var(--pine2)}
+.a{margin:0 0 6px}
+.a.small{color:var(--muted);font-size:14.5px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:4px 18px 10px;margin:14px 0}
+.cando,.cantdo{border-radius:12px;padding:14px 18px;margin:12px 0}
+.cando{background:var(--ok-bg);border:1px solid #bcdcc8}
+.cantdo{background:var(--bad-bg);border:1px solid #e8bcb6}
+.cando h3,.cantdo h3{font-size:14px;letter-spacing:.04em;text-transform:uppercase;margin-bottom:8px}
+.cando h3{color:#0c5a34}.cantdo h3{color:#8a1a13}
+.cando ul,.cantdo ul{margin:0;padding-left:20px}
+.cando li,.cantdo li{margin:5px 0}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 4px}
+.chip{font-size:12.5px;font-weight:700;padding:4px 11px;border-radius:999px;border:1.5px solid}
+.chip.g{background:var(--ok-bg);color:#0c5a34;border-color:#bcdcc8}
+.chip.a{background:var(--warn-bg);color:#8a5a08;border-color:#ecd6a6}
+.chip.r{background:var(--bad-bg);color:#8a1a13;border-color:#e8bcb6}
+.note{background:#fbf6ec;border:1px dashed var(--brass);border-radius:10px;padding:12px 15px;margin:14px 0;font-size:14.5px}
+.note b{color:var(--brass-d)}
+.steps{counter-reset:s;list-style:none;padding:0;margin:8px 0}
+.steps li{counter-increment:s;position:relative;padding:6px 0 6px 34px;border-bottom:1px solid var(--line2)}
+.steps li:last-child{border-bottom:none}
+.steps li::before{content:counter(s);position:absolute;left:0;top:6px;width:23px;height:23px;background:var(--pine);color:#fff;border-radius:50%;font-size:12.5px;font-weight:700;display:grid;place-items:center}
+kbd{background:#eceadf;border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:13px;font-family:var(--sans);font-weight:600}
+.printbtn{background:var(--brass);color:#fff;border:none;padding:10px 16px;border-radius:9px;font-weight:600;font-size:14px;cursor:pointer}
+.printbtn:hover{background:var(--brass-d)}
+footer{max-width:820px;margin:0 auto;padding:0 18px 40px;color:var(--muted);font-size:13px}
+hr{border:none;border-top:1px solid var(--line);margin:26px 0}
+@media print{
+  header{background:#fff;color:#000;border-bottom:2px solid #000}
+  .brand h1,.brand .sub{color:#000}
+  .no-print{display:none!important}
+  body{background:#fff;font-size:12pt}
+  .toc,.card,.cando,.cantdo,.note{border:1px solid #ccc}
+  a{color:#000;text-decoration:none}
+  section.qa{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="head-in">
+    <div class="seal"><img src="./header-emblem.png" alt="Van Anumodan"></div>
+    <div class="brand"><h1>Van Anumodan</h1><div class="sub">Help &amp; Frequently Asked Questions</div></div>
+  </div>
+</header>
+
+<main>
+  <div class="eyebrow">A plain-language guide</div>
+  <p class="lead">This guide explains what the app is for, how to use it step by step, and — just as importantly — what it does <b>not</b> do. No technical knowledge is needed.</p>
+  <button class="printbtn no-print" onclick="window.print()">Print / Save as PDF</button>
+
+  <div class="toc no-print">
+    <h2>On this page</h2>
+    <ol>
+      <li><a href="#what">What is Van Anumodan?</a></li>
+      <li><a href="#can">What it can and cannot do</a></li>
+      <li><a href="#start">Getting started &amp; installing</a></li>
+      <li><a href="#data">Your data &amp; internet</a></li>
+      <li><a href="#scrutiny">Doing a scrutiny, step by step</a></li>
+      <li><a href="#status">Statuses, colours &amp; severity</a></li>
+      <li><a href="#override">Overrides &amp; speaking orders</a></li>
+      <li><a href="#verdict">The verdict explained</a></li>
+      <li><a href="#reports">Reports &amp; sharing a case</a></li>
+      <li><a href="#rules">The Rules Library</a></li>
+      <li><a href="#problems">Common problems</a></li>
+      <li><a href="#cautions">Important cautions</a></li>
+    </ol>
+  </div>
+
+  <section class="qa" id="what">
+    <h2>1. What is Van Anumodan?</h2>
+    <p class="a">It is a helper for <b>checking forest land diversion proposals</b> before the State Government forwards them. It walks you through a complete list of things that should be verified, keeps your findings in one place, points out gaps and mismatches, and produces a tidy scrutiny report.</p>
+    <p class="q">Is it part of PARIVESH?</p>
+    <p class="a">No. It is a <b>separate, in-house quality-check tool</b>. It is not connected to PARIVESH and does not submit, forward, or approve anything. You still do all official work on PARIVESH; this app just helps you scrutinise carefully first.</p>
+    <p class="q">Will it decide the case for me?</p>
+    <p class="a">No. It gives an <b>advisory opinion</b> and highlights problems. The decision always remains with the officer and competent authority.</p>
+  </section>
+
+  <section class="qa" id="can">
+    <h2>2. What it can and cannot do</h2>
+    <div class="cando">
+      <h3>✓ What it can do</h3>
+      <ul>
+        <li>Give you the full scrutiny checklist (over 160 checkpoints) in one place.</li>
+        <li>Show only the checks that apply to your particular proposal.</li>
+        <li>Let you mark each check, add remarks, and record evidence.</li>
+        <li>Compare the area figures you enter and flag any mismatch.</li>
+        <li>Keep a running list of “red flags” automatically.</li>
+        <li>Tell you whether the proposal looks ready, and <b>exactly what is blocking it</b>.</li>
+        <li>Produce a scrutiny report and a deficiency memo you can print or save as PDF.</li>
+        <li>Hold a library of the relevant Acts, Rules and guidelines for reference.</li>
+        <li>Work offline, on your iPad, once installed.</li>
+      </ul>
+    </div>
+    <div class="cantdo">
+      <h3>✕ What it cannot do</h3>
+      <ul>
+        <li>It does not grant forest clearance or make the legal decision.</li>
+        <li>It does not read the proposal’s documents for you — <b>you examine the proposal and enter the facts</b>; the app checks them.</li>
+        <li>It does not draw maps or run GIS analysis; you record the GIS results you obtained elsewhere.</li>
+        <li>It does not connect to PARIVESH or submit anything.</li>
+        <li>It does not give legal advice — the rules must be verified and approved by the competent authority.</li>
+        <li>It does not search the internet on its own for rule changes (an administrator publishes updates).</li>
+        <li>It does not store your work in the cloud — data stays on the device you use.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="qa" id="start">
+    <h2>3. Getting started &amp; installing</h2>
+    <p class="q">How do I open it?</p>
+    <p class="a">Open the web address given to you in a browser (on iPad, use <b>Safari</b>).</p>
+    <p class="q">How do I install it like an app on my iPad?</p>
+    <ol class="steps">
+      <li>Open the address in Safari.</li>
+      <li>Tap the <b>Share</b> button (the square with an arrow).</li>
+      <li>Choose <b>Add to Home Screen</b>, then tap <b>Add</b>.</li>
+      <li>A “Van Anumodan” icon appears on your home screen. Open it like any app — it runs full-screen.</li>
+    </ol>
+    <p class="a small">On an Android phone or a computer with Chrome, an <b>Install app</b> button appears at the top — tap it.</p>
+  </section>
+
+  <section class="qa" id="data">
+    <h2>4. Your data &amp; internet</h2>
+    <p class="q">Do I need internet to use it?</p>
+    <p class="a">Only the first time you open it. After that it works <b>offline</b>. Internet is useful for getting the latest rules and for opening source links.</p>
+    <p class="q">Where is my scrutiny work saved?</p>
+    <p class="a">On the <b>device you are using</b>, automatically, as you go. It is not sent anywhere. If you use another device, your work will not appear there unless you move it (see <a href="#reports">Reports &amp; sharing a case</a>).</p>
+    <p class="q">If I close the app, do I lose my work?</p>
+    <p class="a">No. It is saved on the device. To keep a backup or move it, use <b>Export case</b>.</p>
+    <div class="note"><b>Tip.</b> When you are just trying the app inside a browser preview window, saving may not stick between reloads. Once it is properly installed / opened from its own web address, saving works normally.</div>
+  </section>
+
+  <section class="qa" id="scrutiny">
+    <h2>5. Doing a scrutiny, step by step</h2>
+    <ol class="steps">
+      <li><b>Proposal tab</b> — type in the proposal details (PARIVESH number, name, areas, division, etc.).</li>
+      <li>Tick the <b>applicability flags</b> that fit this case (for example, “Compensatory afforestation applies”, “Trees affected”, “Violation exists”) and pick the <b>project category</b>. This makes the app show only the relevant checks.</li>
+      <li><b>Checklist tab</b> — go through each checkpoint. For each one, tap <b>Compliant</b>, <b>Non-Compliant</b>, <b>Clarification</b> or <b>Not Applicable</b>, and add a remark if needed.</li>
+      <li><b>Area Reconciliation tab</b> — enter the area figure from each source. The app compares them and marks any mismatch.</li>
+      <li><b>CA Registry / GIS / Doc Reconciliation tabs</b> — fill these where they apply.</li>
+      <li><b>Dashboard</b> — see the overall verdict and what still needs attention.</li>
+      <li><b>Reports tab</b> — generate the scrutiny report or deficiency memo when done.</li>
+    </ol>
+    <p class="a small">You don’t have to finish in one sitting — your progress is saved as you go.</p>
+    <p class="q">What is the “applicability flag” for?</p>
+    <p class="a">Different proposals need different checks. The flags switch on only the checks that matter for your case, so you are not bothered by irrelevant ones. If you are unsure, leave a check applicable and mark it — the app will not quietly assume something passed.</p>
+  </section>
+
+  <section class="qa" id="status">
+    <h2>6. Statuses, colours &amp; severity</h2>
+    <p class="a">Each check can be set to:</p>
+    <div class="chips">
+      <span class="chip g">Compliant — done / satisfactory</span>
+      <span class="chip a">Clarification — needs more information</span>
+      <span class="chip r">Non-Compliant — a problem</span>
+      <span class="chip">Not Applicable — doesn’t apply</span>
+    </div>
+    <p class="q">What do “Critical” and “Major” mean?</p>
+    <p class="a"><b>Critical</b> checks are serious — if any applicable Critical check is unresolved, the proposal cannot be shown as ready. <b>Major</b> checks matter too, but will show as “needs review” rather than a hard block.</p>
+  </section>
+
+  <section class="qa" id="override">
+    <h2>7. Overrides &amp; speaking orders</h2>
+    <p class="a">Sometimes an officer decides a flagged point is acceptable for a reasoned cause. In that case you can turn on <b>Override</b> for that check and <b>write the reason (a speaking order)</b>. This lets the proposal move forward while keeping a clear, recorded justification.</p>
+    <p class="q">Can everything be overridden?</p>
+    <p class="a">No. The <b>statutory “stop conditions” and final State-level gates cannot be overridden</b> — these are hard legal bars, and the app will not allow it.</p>
+  </section>
+
+  <section class="qa" id="verdict">
+    <h2>8. The verdict explained</h2>
+    <p class="a">The Dashboard shows one of three results, with the reasons listed:</p>
+    <div class="chips">
+      <span class="chip g">Ready for Forwarding</span>
+      <span class="chip a">Requires Officer Review</span>
+      <span class="chip r">Not Ready for Forwarding</span>
+    </div>
+    <p class="a"><b>Ready</b> = every applicable Critical check is settled and nothing is blocking. <b>Requires Officer Review</b> = the serious items are fine, but some checks are still open or unchecked. <b>Not Ready</b> = there is at least one unresolved Critical problem or stop condition, which is listed for you.</p>
+    <p class="q">There is a percentage score — is that the decision?</p>
+    <p class="a">No. The percentage is just a rough progress indicator for information. It does <b>not</b> decide readiness; the checks and stop conditions do.</p>
+  </section>
+
+  <section class="qa" id="reports">
+    <h2>9. Reports &amp; sharing a case</h2>
+    <p class="q">How do I get a report?</p>
+    <p class="a">On the <b>Reports</b> tab, tap <b>Executive scrutiny report</b> or <b>Deficiency memo</b>, then <b>Print / save PDF</b> to keep or share it.</p>
+    <p class="q">How do I move my work to another device or back it up?</p>
+    <p class="a">Tap <b>Export case (JSON)</b> to save a file of everything. On the other device, open the app and tap <b>Import case</b> and choose that file.</p>
+    <p class="q">How do I start a fresh proposal?</p>
+    <p class="a">Export the current case first if you want to keep it, then tap <b>Reset case</b>.</p>
+  </section>
+
+  <section class="qa" id="rules">
+    <h2>10. The Rules Library</h2>
+    <p class="a">The <b>Rules Library</b> tab lists the Acts, Rules and guidelines behind the checks, with links to the official documents. It shows a version and date at the top.</p>
+    <p class="q">Who keeps the rules up to date?</p>
+    <p class="a">A designated <b>administrator</b> updates them and publishes the update; every installed device then picks it up automatically the next time it is online. The app never changes the rules on its own from the internet.</p>
+    <p class="q">There is an “Assisted rule intake” — what is that? (for administrators)</p>
+    <p class="a">It helps turn an Act/Rule/amendment into a library entry. You can <b>upload a text-based PDF</b> or <b>paste the text</b>, and the app fills in the name, number, dates and clause for you to <b>review and correct</b> before saving. It only pre-fills — nothing is added without your approval. Scanned (photo) PDFs have no readable text, so paste the text instead.</p>
+  </section>
+
+  <section class="qa" id="problems">
+    <h2>11. Common problems</h2>
+    <p class="q">The logo screen appears every time I open it.</p>
+    <p class="a">That is the normal opening screen; it disappears in about a second, or tap it to skip.</p>
+    <p class="q">My changes didn’t save.</p>
+    <p class="a">Make sure you opened the installed app (or its own web address), not a temporary preview window. Installed, it saves automatically.</p>
+    <p class="q">A PDF wouldn’t read in the rule intake.</p>
+    <p class="a">It is probably a scanned image with no text. Paste the text instead, or ask the administrator.</p>
+    <p class="q">It asked me to reload for a new version.</p>
+    <p class="a">That is a normal update — tap yes. Your saved work is not affected.</p>
+    <p class="q">A rule’s web link won’t open in the app.</p>
+    <p class="a">Some government sites block being read inside another app. Open the link in a normal browser tab.</p>
+  </section>
+
+  <section class="qa" id="cautions">
+    <h2>12. Important cautions</h2>
+    <div class="note">
+      <p class="a" style="margin-top:8px"><b>This is a decision-support aid, not the decision.</b> Always apply your own judgement and the applicable law.</p>
+      <p class="a">Rules shown here must be <b>verified against the official source</b> and approved by the competent authority before they are relied upon.</p>
+      <p class="a">Proposal information can be sensitive — treat the device and any exported files with the same care as official records.</p>
+      <p class="a" style="margin-bottom:8px">The app helps you be thorough and consistent; it does not replace the officer, the Nodal establishment, or statutory procedure.</p>
+    </div>
+  </section>
+
+  <hr>
+  <button class="printbtn no-print" onclick="window.print()">Print / Save as PDF</button>
+</main>
+
+<footer>
+  Van Anumodan — Intelligent Forest Diversion Proposal Scrutiny &amp; Decision Support · Government of Uttarakhand, Forest, Environment &amp; Climate Change.
+  This help guide is for ease of use and does not itself carry any legal force.
+</footer>
+</body>
+</html>

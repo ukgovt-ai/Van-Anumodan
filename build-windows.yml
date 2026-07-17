@@ -1,0 +1,70 @@
+name: Build Windows EXE
+
+# Produces a self-contained VanAnumodan.exe (with OCR) on every push to main,
+# and attaches it to a Release when you push a tag like v1.0.0.
+on:
+  push:
+    branches: [ main ]
+    tags: [ 'v*' ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Tesseract OCR (with Hindi)
+        shell: pwsh
+        run: |
+          choco install --no-progress -y tesseract
+          $tessdir = "C:\Program Files\Tesseract-OCR\tessdata"
+          # ensure English + Hindi language data
+          foreach ($lang in @('eng','hin')) {
+            $dst = Join-Path $tessdir "$lang.traineddata"
+            if (-not (Test-Path $dst)) {
+              Invoke-WebRequest -Uri "https://raw.githubusercontent.com/tesseract-ocr/tessdata/main/$lang.traineddata" -OutFile $dst
+            }
+          }
+
+      - name: Install Python deps
+        working-directory: desktop
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt pyinstaller
+
+      - name: Stage web UI
+        shell: pwsh
+        working-directory: desktop
+        run: |
+          New-Item -ItemType Directory -Force -Path web | Out-Null
+          $files = @('index.html','help.html','rules.json','manifest.webmanifest',
+            'header-emblem.png','logo-full.png','icon-180.png','icon-192.png',
+            'icon-512.png','icon-any-512.png')
+          foreach ($f in $files) { if (Test-Path "..\$f") { Copy-Item "..\$f" "web\$f" -Force } }
+
+      - name: Bundle Tesseract for self-contained OCR
+        shell: pwsh
+        working-directory: desktop
+        run: |
+          New-Item -ItemType Directory -Force -Path vendor\tesseract | Out-Null
+          Copy-Item "C:\Program Files\Tesseract-OCR\*" "vendor\tesseract\" -Recurse -Force
+
+      - name: Build EXE
+        working-directory: desktop
+        run: pyinstaller van_anumodan.spec
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: VanAnumodan-windows
+          path: desktop/dist/VanAnumodan.exe
+
+      - name: Attach to Release (on tag)
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: desktop/dist/VanAnumodan.exe
