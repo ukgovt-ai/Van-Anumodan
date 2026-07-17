@@ -1,0 +1,1680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0f2e26">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Van Anumodan">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="./icon-180.png">
+<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
+<title>Van Anumodan — Forest Diversion Scrutiny</title>
+<style>
+:root{
+  --pine:#0f2e26; --pine2:#143b30; --pine3:#1c4c3e;
+  --paper:#f4f2ea; --card:#ffffff; --ink:#1b241f; --muted:#5f6b63;
+  --line:#dbd7c8; --line2:#e8e5d9; --brass:#b1832f; --brass-d:#8a6522;
+  --ok:#1f7a4d; --ok-bg:#e3efe7; --ok-line:#bcdcc8;
+  --warn:#b0761a; --warn-bg:#f7ecd4; --warn-line:#ecd6a6;
+  --bad:#b0261d; --bad-bg:#f6e0dd; --bad-line:#e8bcb6;
+  --neu:#6b7671; --neu-bg:#eceadf; --neu-line:#dcd8ca;
+  --na:#8a94b0; --na-bg:#e9ebf1;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Code",Menlo,Consolas,monospace;
+  --sh:0 1px 2px rgba(20,40,30,.06),0 4px 14px rgba(20,40,30,.05);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:var(--sans);background:var(--paper);color:var(--ink);
+  -webkit-text-size-adjust:100%;line-height:1.45;font-size:15px;
+  padding-bottom:env(safe-area-inset-bottom)}
+h1,h2,h3,h4{margin:0;font-weight:650;letter-spacing:-.01em}
+button{font-family:inherit;cursor:pointer}
+input,select,textarea{font-family:inherit;font-size:14px;color:var(--ink)}
+a{color:var(--pine3)}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--brass-d)}
+
+/* ---------- Header ---------- */
+header{background:var(--pine);color:#eef3ef;position:sticky;top:0;z-index:40;
+  border-bottom:3px solid var(--brass)}
+.head-in{max-width:1180px;margin:0 auto;padding:14px 18px calc(14px + env(safe-area-inset-top)/2);
+  display:flex;align-items:center;gap:14px;padding-top:calc(14px + env(safe-area-inset-top))}
+.seal{width:44px;height:44px;border-radius:50%;flex:0 0 auto;overflow:hidden;background:#fff}
+.seal img{width:100%;height:100%;display:block;object-fit:cover}
+.brand h1{font-size:18px;color:#fff;letter-spacing:.02em}
+.brand .sub{font-size:11px;color:#9fc0b1;letter-spacing:.03em;margin-top:1px}
+.head-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.gov-tag{font-size:10.5px;color:#9fc0b1;text-align:right;line-height:1.3;display:none}
+@media(min-width:720px){.gov-tag{display:block}}
+
+/* verdict chip in header */
+.vchip{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  padding:6px 11px;border-radius:999px;white-space:nowrap;border:1.5px solid}
+.vchip.g{background:var(--ok-bg);color:#0c5a34;border-color:var(--ok-line)}
+.vchip.a{background:var(--warn-bg);color:#8a5a08;border-color:var(--warn-line)}
+.vchip.r{background:var(--bad-bg);color:#8a1a13;border-color:var(--bad-line)}
+.vchip.n{background:#dfe6df;color:#3a4a42;border-color:#c6d1c8}
+
+/* ---------- Nav ---------- */
+nav{background:var(--pine2);position:sticky;top:0;z-index:39;
+  border-bottom:1px solid rgba(255,255,255,.06)}
+.nav-in{max-width:1180px;margin:0 auto;display:flex;gap:2px;overflow-x:auto;
+  padding:0 10px;scrollbar-width:none}
+.nav-in::-webkit-scrollbar{display:none}
+.nav-in button{background:none;border:none;color:#a9c6b8;font-size:13px;font-weight:600;
+  padding:12px 13px;border-bottom:2.5px solid transparent;white-space:nowrap;letter-spacing:.01em}
+.nav-in button .n{font-family:var(--mono);font-size:11px;opacity:.7;margin-left:5px}
+.nav-in button.active{color:#fff;border-bottom-color:var(--brass)}
+.nav-in button:hover{color:#e8f1ec}
+
+main{max-width:1180px;margin:0 auto;padding:20px 16px 60px}
+.view{display:none}
+.view.active{display:block}
+.page-head{margin-bottom:18px}
+.page-head h2{font-size:23px}
+.page-head p{color:var(--muted);font-size:13.5px;margin:5px 0 0;max-width:70ch}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:var(--sh)}
+.card.pad{padding:18px}
+.grid{display:grid;gap:14px}
+
+/* ---------- Dashboard ---------- */
+.verdict{border-radius:14px;padding:20px;border:1.5px solid;position:relative;overflow:hidden}
+.verdict.g{background:var(--ok-bg);border-color:var(--ok-line)}
+.verdict.a{background:var(--warn-bg);border-color:var(--warn-line)}
+.verdict.r{background:var(--bad-bg);border-color:var(--bad-line)}
+.verdict.n{background:var(--neu-bg);border-color:var(--neu-line)}
+.verdict .vlabel{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+.verdict.g .vlabel{color:#0c5a34}.verdict.a .vlabel{color:#8a5a08}
+.verdict.r .vlabel{color:#8a1a13}.verdict.n .vlabel{color:#43514a}
+.verdict h3{font-size:27px;margin:6px 0 2px;letter-spacing:-.02em}
+.verdict.g h3{color:#0b4e2d}.verdict.a h3{color:#7a4e06}
+.verdict.r h3{color:#7d160f}.verdict.n h3{color:#39463f}
+.verdict .vsc{font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:8px}
+.verdict .stampring{position:absolute;right:-30px;top:-30px;width:150px;height:150px;
+  border:2px dashed currentColor;border-radius:50%;opacity:.10}
+.blockers{margin-top:14px;padding-top:14px;border-top:1px solid rgba(0,0,0,.09)}
+.blockers .bt{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8a1a13;margin-bottom:8px}
+.blockers ul{margin:0;padding:0;list-style:none;display:grid;gap:6px}
+.blockers li{font-size:13px;display:flex;gap:8px;align-items:flex-start}
+.blockers li .bid{font-family:var(--mono);font-size:11px;font-weight:700;background:#fff;
+  border:1px solid var(--bad-line);color:#8a1a13;padding:1px 6px;border-radius:5px;flex:0 0 auto}
+.blockers.ok li .bid{border-color:var(--ok-line);color:#0c5a34}
+.blockers.ok .bt{color:#0c5a34}
+
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media(min-width:640px){.stats{grid-template-columns:repeat(4,1fr)}}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:14px}
+.stat .k{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.stat .v{font-family:var(--mono);font-size:27px;font-weight:600;margin-top:4px;line-height:1}
+.stat .v.ok{color:var(--ok)}.stat .v.bad{color:var(--bad)}.stat .v.warn{color:var(--warn)}
+
+.dash-cols{display:grid;gap:14px;margin-top:14px}
+@media(min-width:860px){.dash-cols{grid-template-columns:1.3fr 1fr}}
+.sec-h{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.sec-h h3{font-size:15px}
+.sec-h .rule{height:1px;background:var(--line);flex:1}
+
+/* module progress bars */
+.modrow{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;padding:7px 0;border-bottom:1px solid var(--line2)}
+.modrow:last-child{border-bottom:none}
+.modrow .ml{font-size:13px;font-weight:600}
+.modrow .mc{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.bar{grid-column:1/-1;height:6px;background:#ececdf;border-radius:99px;overflow:hidden;display:flex}
+.bar i{height:100%;display:block}
+.bar i.ok{background:var(--ok)}.bar i.bad{background:var(--bad)}
+.bar i.warn{background:var(--warn)}.bar i.neu{background:#c9cabb}
+
+/* ---------- Proposal form ---------- */
+.form-grid{display:grid;gap:14px}
+@media(min-width:640px){.form-grid{grid-template-columns:1fr 1fr}}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:12px;font-weight:600;color:var(--muted);letter-spacing:.02em}
+.field input,.field select{padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:#fdfdfb}
+.field input:focus,.field select:focus,textarea:focus{outline:2px solid var(--pine3);outline-offset:-1px;border-color:var(--pine3)}
+.flags{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+@media(min-width:640px){.flags{grid-template-columns:repeat(3,1fr)}}
+.flag{display:flex;align-items:center;gap:9px;padding:10px 12px;border:1px solid var(--line);
+  border-radius:9px;background:#fdfdfb;font-size:13px;font-weight:500}
+.flag input{width:17px;height:17px;accent-color:var(--pine3);flex:0 0 auto}
+.subhead{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--brass-d);margin:22px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+
+/* ---------- Checklist ---------- */
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px}
+.toolbar input[type=search]{flex:1;min-width:150px;padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:#fff}
+.toolbar select{padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:#fff}
+.chk-toggle{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted);font-weight:600;
+  padding:8px 11px;border:1px solid var(--line);border-radius:8px;background:#fff}
+.chk-toggle input{accent-color:var(--pine3)}
+
+.modblock{margin-bottom:16px}
+.modblock>.mh{display:flex;align-items:center;gap:10px;padding:10px 4px;cursor:pointer;user-select:none}
+.modblock>.mh .caret{transition:transform .15s;color:var(--muted);font-size:12px}
+.modblock.collapsed>.mh .caret{transform:rotate(-90deg)}
+.modblock>.mh .mt{font-size:14px;font-weight:700}
+.modblock>.mh .mstat{margin-left:auto;display:flex;gap:5px}
+.modblock.collapsed .rows{display:none}
+.mpill{font-family:var(--mono);font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:6px;border:1px solid}
+.mpill.ok{background:var(--ok-bg);color:var(--ok);border-color:var(--ok-line)}
+.mpill.bad{background:var(--bad-bg);color:var(--bad);border-color:var(--bad-line)}
+.mpill.neu{background:var(--neu-bg);color:var(--neu);border-color:var(--neu-line)}
+
+.chk{border:1px solid var(--line);border-radius:10px;background:var(--card);margin-bottom:9px;overflow:hidden}
+.chk.crit{border-left:4px solid var(--bad-line)}
+.chk.resolved-ok{border-left-color:var(--ok)}
+.chk.unresolved-crit{border-left-color:var(--bad)}
+.chk-top{display:flex;gap:11px;padding:12px 13px;align-items:flex-start}
+.chk-id{font-family:var(--mono);font-size:11.5px;font-weight:700;color:var(--pine3);
+  background:#eef3ef;border:1px solid #d6e2da;border-radius:6px;padding:3px 7px;flex:0 0 auto}
+.chk-body{flex:1;min-width:0}
+.chk-cp{font-size:14px;font-weight:600;line-height:1.35}
+.chk-meta{display:flex;flex-wrap:wrap;gap:7px;margin-top:7px;font-size:11px;color:var(--muted)}
+.chk-meta .m{background:#f3f2ea;border:1px solid var(--line2);border-radius:5px;padding:2px 7px}
+.chk-meta .m b{color:var(--ink);font-weight:600}
+.sev{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:3px 8px;border-radius:6px;flex:0 0 auto}
+.sev.Critical{background:var(--bad-bg);color:var(--bad);border:1px solid var(--bad-line)}
+.sev.Major{background:var(--warn-bg);color:var(--warn);border:1px solid var(--warn-line)}
+.na-tag{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--na);
+  background:var(--na-bg);padding:3px 8px;border-radius:6px}
+
+.chk-controls{padding:0 13px 13px;display:grid;gap:9px}
+.statusrow{display:flex;flex-wrap:wrap;gap:6px}
+.sbtn{font-size:12px;font-weight:600;padding:7px 11px;border-radius:7px;border:1.5px solid var(--line);
+  background:#fff;color:var(--muted)}
+.sbtn.sel[data-s="Compliant"]{background:var(--ok-bg);color:var(--ok);border-color:var(--ok)}
+.sbtn.sel[data-s="Non-Compliant"]{background:var(--bad-bg);color:var(--bad);border-color:var(--bad)}
+.sbtn.sel[data-s="Clarification"]{background:var(--warn-bg);color:var(--warn);border-color:var(--warn)}
+.sbtn.sel[data-s="Not Applicable"]{background:var(--na-bg);color:var(--na);border-color:var(--na)}
+.chk textarea{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:7px;background:#fdfdfb;
+  resize:vertical;min-height:38px;font-size:13px}
+.ovr{display:flex;flex-direction:column;gap:7px;background:#fbf6ec;border:1px dashed var(--brass);border-radius:8px;padding:10px}
+.ovr .ovh{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:var(--brass-d)}
+.ovr .ovh input{accent-color:var(--brass)}
+.noovr{font-size:11.5px;color:var(--bad);font-weight:600;display:flex;align-items:center;gap:6px}
+.evid{font-size:12px;color:var(--muted)}
+.evid b{color:var(--ink)}
+.hidden{display:none!important}
+
+/* ---------- Tables (recon / CA / GIS / doc) ---------- */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:11px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:13px;min-width:560px}
+th,td{text-align:left;padding:9px 11px;border-bottom:1px solid var(--line2);vertical-align:middle}
+th{background:#f0efe6;font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);font-weight:700;position:sticky;top:0}
+td input,td select{width:100%;padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:#fdfdfb}
+td.num input{font-family:var(--mono);text-align:right}
+tr:last-child td{border-bottom:none}
+.diff{font-family:var(--mono);font-weight:700;font-size:12px}
+.diff.ok{color:var(--ok)}.diff.bad{color:var(--bad)}
+.tstatus{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:3px 8px;border-radius:6px;display:inline-block}
+.tstatus.ok{background:var(--ok-bg);color:var(--ok)}
+.tstatus.bad{background:var(--bad-bg);color:var(--bad)}
+.tstatus.neu{background:var(--neu-bg);color:var(--neu)}
+.tolbar{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.tolbar label{font-size:12.5px;color:var(--muted);font-weight:600}
+.tolbar input{width:80px;padding:7px 9px;border:1px solid var(--line);border-radius:7px;font-family:var(--mono);text-align:right}
+
+/* ---------- Buttons ---------- */
+.btn{border:1px solid var(--line);background:#fff;color:var(--ink);padding:9px 14px;border-radius:8px;
+  font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:7px}
+.btn:hover{background:#f6f5ef}
+.btn.primary{background:var(--pine);color:#fff;border-color:var(--pine)}
+.btn.primary:hover{background:var(--pine2)}
+.btn.brass{background:var(--brass);color:#fff;border-color:var(--brass)}
+.btn.brass:hover{background:var(--brass-d)}
+.btn.danger{color:var(--bad);border-color:var(--bad-line)}
+.btnrow{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}
+.addrow{margin-top:11px}
+
+/* red flags */
+.rf{border:1px solid var(--line);border-left:4px solid var(--bad);border-radius:9px;background:var(--card);padding:13px;margin-bottom:10px}
+.rf.closed{border-left-color:var(--ok);opacity:.72}
+.rf.major{border-left-color:var(--warn)}
+.rf-top{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.rf-id{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--muted)}
+.rf-def{font-size:13.5px;font-weight:600;margin:7px 0}
+.rf-meta{font-size:11.5px;color:var(--muted);display:flex;flex-wrap:wrap;gap:10px}
+.empty{text-align:center;padding:36px 18px;color:var(--muted)}
+.empty svg{width:38px;height:38px;opacity:.4;margin-bottom:10px}
+
+/* reports */
+.report{background:#fff;border:1px solid var(--line);border-radius:12px;padding:26px;box-shadow:var(--sh)}
+.rep-head{text-align:center;border-bottom:2px solid var(--pine);padding-bottom:14px;margin-bottom:18px}
+.rep-head .go{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--brass-d);font-weight:700}
+.rep-head h3{font-size:20px;margin:6px 0 2px}
+.rep-head .rs{font-size:12px;color:var(--muted)}
+.rep-sec{margin:16px 0}
+.rep-sec h4{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--pine3);
+  border-bottom:1px solid var(--line);padding-bottom:5px;margin-bottom:9px}
+.rep-kv{display:grid;grid-template-columns:auto 1fr;gap:4px 16px;font-size:13px}
+.rep-kv .k{color:var(--muted)}
+.rep-kv .v{font-weight:600}
+.rep-list{font-size:13px;padding-left:0;list-style:none;margin:0;display:grid;gap:6px}
+.rep-list li{display:flex;gap:8px}
+.rep-list li .rid{font-family:var(--mono);font-size:11px;font-weight:700;flex:0 0 auto;color:var(--bad)}
+.rep-verdict{text-align:center;padding:14px;border-radius:10px;font-weight:700;font-size:16px;margin:8px 0}
+.footnote{font-size:11px;color:var(--muted);margin-top:8px;line-height:1.5}
+
+.savebar{position:fixed;left:0;right:0;bottom:0;background:rgba(15,46,38,.97);color:#fff;
+  padding:10px 16px calc(10px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:12px;z-index:50;
+  transform:translateY(120%);transition:transform .25s;box-shadow:0 -4px 18px rgba(0,0,0,.15)}
+.savebar.show{transform:translateY(0)}
+.savebar .msg{font-size:13px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);opacity:0;
+  background:var(--pine);color:#fff;padding:10px 18px;border-radius:9px;font-size:13px;font-weight:600;
+  z-index:60;transition:.25s;pointer-events:none;box-shadow:var(--sh)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#splash{position:fixed;inset:0;background:#fff;display:flex;align-items:center;justify-content:center;z-index:200;transition:opacity .5s ease}
+#splash.hide{opacity:0;pointer-events:none}
+#splash img{width:min(74vw,380px);height:auto}
+.dash-logo{display:none;justify-content:center;margin:4px 0 20px}
+.dash-logo img{width:min(80vw,320px);height:auto}
+.dropzone{border:2px dashed var(--brass);border-radius:14px;background:#fbf6ec;padding:30px 18px;text-align:center;cursor:pointer;transition:background .15s}
+.dropzone.drag{background:#f4e8cf}
+.dz-title{font-weight:650;font-size:16px}
+.dz-sub{color:var(--muted);font-size:13px;margin-top:6px}
+.mryes{color:var(--ok);font-weight:700}
+.mrno{color:var(--warn);font-weight:700}
+.figtag{font-family:var(--mono);font-weight:700}
+@media(prefers-reduced-motion:reduce){#splash{transition:none}}
+
+@media print{
+  header,nav,.savebar,.no-print,.btnrow{display:none!important}
+  body{background:#fff}
+  main{max-width:none;padding:0}
+  .view{display:none!important}
+  #printArea{display:block!important}
+  .report{border:none;box-shadow:none;border-radius:0;padding:0}
+}
+</style>
+</head>
+<body>
+<div id="splash"><img src="./logo-full.png" alt="Van Anumodan — Intelligent Forest Clearance Scrutiny System"></div>
+<header>
+  <div class="head-in">
+    <div class="seal" aria-hidden="true">
+      <img src="./header-emblem.png" alt="Van Anumodan emblem">
+    </div>
+    <div class="brand">
+      <h1>Van Anumodan</h1>
+      <div class="sub">Forest Diversion Proposal Scrutiny &amp; Decision Support</div>
+    </div>
+    <div class="head-right">
+      <button id="installBtn" class="btn brass hidden" style="padding:6px 11px;font-size:12px">Install app</button>
+      <span id="hdrVerdict" class="vchip n">No proposal</span>
+      <div class="gov-tag">Government of Uttarakhand<br>Forest, Environment &amp; Climate Change</div>
+    </div>
+  </div>
+</header>
+<nav>
+  <div class="nav-in" id="nav">
+    <button data-v="dashboard" class="active">Dashboard</button>
+    <button data-v="proposal">Proposal</button>
+    <button data-v="intake">Documents</button>
+    <button data-v="checklist">Checklist<span class="n" id="navChkN"></span></button>
+    <button data-v="area">Area Reconciliation</button>
+    <button data-v="ca">CA Registry</button>
+    <button data-v="gis">GIS Checks</button>
+    <button data-v="docs">Doc Reconciliation</button>
+    <button data-v="flags">Red Flags<span class="n" id="navFlagN"></span></button>
+    <button data-v="reports">Reports</button>
+    <button data-v="rules">Rules Library</button>
+  </div>
+</nav>
+
+<main>
+  <!-- DASHBOARD -->
+  <section class="view active" id="v-dashboard">
+    <div class="page-head">
+      <div class="eyebrow">State Government Scrutiny Console</div>
+      <h2 id="dashTitle">Proposal Dashboard</h2>
+      <p id="dashSub">Set up a proposal to begin evidence-linked scrutiny of a PARIVESH forest-diversion package.</p>
+    </div>
+    <div class="dash-logo" id="dashLogo"><img src="./logo-full.png" alt="Van Anumodan"></div>
+    <div id="verdictPanel"></div>
+    <div class="stats" id="statCards" style="margin-top:14px"></div>
+    <div class="dash-cols">
+      <div class="card pad">
+        <div class="sec-h"><h3>Module compliance</h3><span class="rule"></span></div>
+        <div id="modProgress"></div>
+      </div>
+      <div class="card pad">
+        <div class="sec-h"><h3>Open critical issues</h3><span class="rule"></span></div>
+        <div id="critList"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROPOSAL -->
+  <section class="view" id="v-proposal">
+    <div class="page-head">
+      <div class="eyebrow">FR-01 · FR-05</div>
+      <h2>Proposal &amp; applicability</h2>
+      <p>Proposal identity drives the dynamic checklist. Applicability flags activate conditional controls; anything left applicable stays unresolved until an officer disposes of it — no silent assumptions.</p>
+    </div>
+    <div class="card pad">
+      <div class="form-grid" id="propForm"></div>
+      <div class="subhead">Applicability flags (activate conditional controls)</div>
+      <div class="flags" id="propFlags"></div>
+      <div class="subhead">Project category (activates project-specific technical checks)</div>
+      <div class="field" style="max-width:340px">
+        <label for="pcat">Project category</label>
+        <select id="pcat">
+          <option value="">— select —</option>
+          <option>Roads</option><option>Transmission</option><option>Hydropower</option>
+          <option>Mining</option><option>Pipeline/OFC</option><option>Buildings/utilities</option>
+          <option>Other / general</option>
+        </select>
+      </div>
+      <div class="btnrow">
+        <button class="btn primary" id="saveProp">Save proposal</button>
+        <button class="btn" id="gotoChk">Open checklist</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- DOCUMENTS / INTAKE -->
+  <section class="view" id="v-intake">
+    <div class="page-head">
+      <div class="eyebrow">FR-01/03/07 · Document intake</div>
+      <h2>Documents</h2>
+      <p>Upload the proposal files together — the app sorts them by type and automatically reads the machine-readable ones (KML/KMZ area, spreadsheets, Word, digital PDFs), pre-fills the reconciliation grid and lists what still needs manual reading. Scanned or photographed pages have no text inside them and must be read by you (or processed by the Phase II back-end OCR).</p>
+    </div>
+    <div id="engineBanner" class="footnote" style="margin:10px 0"></div>
+    <div id="dropzone" class="dropzone">
+      <input type="file" id="fileMulti" multiple accept=".kml,.kmz,.xlsx,.xls,.csv,.docx,.pdf,.zip,image/*" class="hidden">
+      <div class="dz-title">Tap to choose files, or drop them here</div>
+      <div class="dz-sub">KML · KMZ · XLSX · CSV · DOCX · PDF · ZIP · images — many at once, or a single ZIP</div>
+    </div>
+    <div id="intakeProg" class="footnote" style="margin-top:10px"></div>
+    <div id="invWrap" class="hidden">
+      <div class="sec-h" style="margin-top:18px"><h3>Uploaded documents</h3><span class="rule"></span></div>
+      <div class="tbl-wrap"><table id="invTbl"></table></div>
+      <div class="sec-h" style="margin-top:18px"><h3>Figures found</h3><span class="rule"></span></div>
+      <div id="figWrap"></div>
+      <div class="btnrow">
+        <button class="btn primary" id="applyFigs">Apply to reconciliation</button>
+        <button class="btn brass" id="genIntake">Intake &amp; extraction report</button>
+        <button class="btn" id="clearIntake">Clear list</button>
+      </div>
+      <div id="intakeReport" style="margin-top:16px"></div>
+    </div>
+  </section>
+
+  <!-- CHECKLIST -->
+  <section class="view" id="v-checklist">
+    <div class="page-head">
+      <div class="eyebrow">FR-06 · FR-15 · Master Compliance Matrix</div>
+      <h2>Scrutiny checklist</h2>
+      <p><span id="chkCount"></span> Set each applicable control. Critical controls block a Ready verdict until resolved. Overrides need a speaking order and are barred on statutory stop conditions.</p>
+    </div>
+    <div class="toolbar">
+      <input type="search" id="chkSearch" placeholder="Search checkpoints, IDs, evidence…">
+      <select id="fMod"><option value="">All modules</option></select>
+      <select id="fSev"><option value="">All severity</option><option>Critical</option><option>Major</option></select>
+      <select id="fStat"><option value="">All statuses</option>
+        <option>Not Checked</option><option>Compliant</option><option>Non-Compliant</option>
+        <option>Clarification</option><option>Not Applicable</option></select>
+      <label class="chk-toggle"><input type="checkbox" id="fApp">Applicable only</label>
+      <label class="chk-toggle"><input type="checkbox" id="fCrit">Critical only</label>
+    </div>
+    <div id="checklist"></div>
+  </section>
+
+  <!-- AREA -->
+  <section class="view" id="v-area">
+    <div class="page-head">
+      <div class="eyebrow">FR-04 · Module C</div>
+      <h2>Area reconciliation</h2>
+      <p>Every source value is diffed against the PARIVESH portal area. A difference beyond tolerance is a critical mismatch and a stop condition.</p>
+    </div>
+    <div class="tolbar">
+      <label>Portal reference area (ha)</label><input class="mono" id="portalArea" type="number" step="0.0001" placeholder="0.0000">
+      <label>Tolerance (ha)</label><input class="mono" id="areaTol" type="number" step="0.0001" value="0.0100">
+    </div>
+    <div class="tbl-wrap"><table id="areaTbl"></table></div>
+  </section>
+
+  <!-- CA -->
+  <section class="view" id="v-ca">
+    <div class="page-head">
+      <div class="eyebrow">FR-10 · Module I</div>
+      <h2>Compensatory afforestation registry</h2>
+      <p>Parcel-level CA verification: ownership, area match, suitability, encumbrance and overlap against previously committed CA land.</p>
+    </div>
+    <div class="tbl-wrap"><table id="caTbl"></table></div>
+    <button class="btn addrow" id="addCA">+ Add CA parcel</button>
+  </section>
+
+  <!-- GIS -->
+  <section class="view" id="v-gis">
+    <div class="page-head">
+      <div class="eyebrow">FR-09 · Module D/L</div>
+      <h2>GIS &amp; spatial checks</h2>
+      <p>Validate geometry, area, jurisdiction and intersections with protected areas, ESZ, tiger reserve/CTH and corridors using approved authoritative layers.</p>
+    </div>
+    <div class="card pad" id="gisEngineCard" style="margin-bottom:16px">
+      <div class="sec-h"><h3>Run spatial check</h3><span class="rule"></span></div>
+      <div id="gisEngineBanner" class="footnote" style="margin-bottom:12px"></div>
+      <div class="field" style="max-width:440px">
+        <label>Proposal boundary (KML / KMZ)</label>
+        <input type="file" id="gisKml" accept=".kml,.kmz">
+      </div>
+      <div class="subhead">Authoritative layers (GeoJSON or KML) — optional, needs desktop engine</div>
+      <div id="gisFolder" class="footnote" style="margin-bottom:8px"></div>
+      <div class="form-grid" id="gisLayers"></div>
+      <div class="btnrow">
+        <button class="btn primary" id="runGis">Run spatial check (attached layers)</button>
+        <button class="btn brass" id="runGisAuto">Check against folder layers</button>
+        <span id="gisStatus" class="footnote"></span>
+      </div>
+      <div id="gisResult" style="margin-top:14px"></div>
+    </div>
+    <div class="tbl-wrap"><table id="gisTbl"></table></div>
+  </section>
+
+  <!-- DOCS -->
+  <section class="view" id="v-docs">
+    <div class="page-head">
+      <div class="eyebrow">FR-07 · Module Q</div>
+      <h2>Cross-document reconciliation</h2>
+      <p>Material facts compared across portal, application, DFO/SIR, CF, Nodal and GIS. Fill values to surface mismatches.</p>
+    </div>
+    <div class="tbl-wrap"><table id="docTbl"></table></div>
+  </section>
+
+  <!-- FLAGS -->
+  <section class="view" id="v-flags">
+    <div class="page-head">
+      <div class="eyebrow">FR-13 · Red-flag register</div>
+      <h2>Red flags</h2>
+      <p>Auto-raised from unresolved critical/major controls, plus manual flags. Close a flag with resolution evidence to lift the block.</p>
+    </div>
+    <div id="flagList"></div>
+    <button class="btn addrow" id="addFlag">+ Add manual flag</button>
+  </section>
+
+  <!-- REPORTS -->
+  <section class="view" id="v-reports">
+    <div class="page-head">
+      <div class="eyebrow">FR-17 · Annexure A/B</div>
+      <h2>Reports &amp; case file</h2>
+      <p>Generate the executive scrutiny report and deficiency memo, or export the full case as a portable file.</p>
+    </div>
+    <div class="btnrow no-print" style="margin-top:0">
+      <button class="btn brass" id="genExec">Executive scrutiny report</button>
+      <button class="btn" id="genMemo">Deficiency memo</button>
+      <button class="btn" id="printRep">Print / save PDF</button>
+      <button class="btn" id="exportJson">Export case (JSON)</button>
+      <button class="btn" id="importJson">Import case</button>
+      <input type="file" id="fileIn" accept="application/json" class="hidden">
+      <button class="btn danger" id="resetAll">Reset case</button>
+    </div>
+    <div id="reportOut" style="margin-top:16px"></div>
+  </section>
+
+  <!-- RULES -->
+  <section class="view" id="v-rules">
+    <div class="page-head">
+      <div class="eyebrow">FR-11 · Rule governance</div>
+      <h2>Rules &amp; guidelines library</h2>
+      <p>Version-controlled legal sources. Link each rule to its Act/clause, effective date and supersession so checklist findings carry an auditable legal basis before production use.</p>
+    </div>
+    <div class="card pad" id="intakeCard" style="margin-bottom:16px">
+      <div class="sec-h"><h3>Assisted rule intake</h3><span class="rule"></span>
+        <button class="btn" id="intakeToggle" style="padding:5px 11px">Show</button></div>
+      <div id="intakeBody" class="hidden">
+        <p class="footnote" style="margin-top:0">Pull an Act, Rule or amendment into a draft rule row. Extraction only <b>pre-fills</b> the fields — you review, correct and approve before it enters the library. Nothing is fetched from the open web on its own.</p>
+        <div class="statusrow" style="margin:10px 0">
+          <button class="sbtn sel" data-im="pdf">Upload PDF</button>
+          <button class="sbtn" data-im="text">Paste text</button>
+          <button class="sbtn" data-im="url">From URL</button>
+        </div>
+        <div id="imPdf"><input type="file" accept="application/pdf,.pdf" id="intakePdf">
+          <div class="footnote">Works on text-based gazette/rule PDFs, fully on-device. Scanned image PDFs have no text layer — use Paste text, or send the file to Claude.</div></div>
+        <div id="imText" class="hidden"><textarea id="intakeText" placeholder="Paste the gazette / rule / amendment text here…" style="width:100%;min-height:120px;padding:9px 11px;border:1px solid var(--line);border-radius:8px"></textarea></div>
+        <div id="imUrl" class="hidden"><input id="intakeUrl" placeholder="https://… official gazette / MoEFCC PDF URL" style="width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:8px">
+          <div class="footnote">The link is saved as the rule’s source. The app will try to read it, but browsers usually block reading cross-site PDFs (CORS) — if so, paste the text or upload the file to auto-fill.</div></div>
+        <div class="btnrow"><button class="btn brass" id="intakeExtract">Extract &amp; pre-fill</button><span id="intakeStatus" class="footnote"></span></div>
+        <div id="intakeForm" class="hidden">
+          <div class="subhead">Review &amp; correct before adding</div>
+          <div class="form-grid">
+            <div class="field"><label>Instrument / Act / Rule</label><input id="if_act"></div>
+            <div class="field"><label>Subject / module</label><select id="if_subject"></select></div>
+            <div class="field"><label>Provision / clause</label><input id="if_clause"></div>
+            <div class="field"><label>GSR / SO number</label><input id="if_gsr"></div>
+            <div class="field"><label>Issue date</label><input id="if_issue" placeholder="YYYY-MM-DD"></div>
+            <div class="field"><label>Effective from</label><input id="if_eff" placeholder="YYYY-MM-DD"></div>
+            <div class="field" style="grid-column:1/-1"><label>Source URL</label><input id="if_src" placeholder="https://…"></div>
+            <div class="field" style="grid-column:1/-1"><label>Notes / excerpt</label><textarea id="if_notes" style="min-height:56px;padding:8px 10px;border:1px solid var(--line);border-radius:7px"></textarea></div>
+          </div>
+          <div class="btnrow"><button class="btn primary" id="intakeAdd">Add to library</button><button class="btn" id="intakeClear">Clear</button></div>
+        </div>
+      </div>
+    </div>
+    <div class="tolbar" style="justify-content:space-between;align-items:flex-start">
+      <div><div class="eyebrow">Published library</div><div id="rulesVer" class="mono" style="font-size:12.5px;margin-top:3px;color:var(--muted)">checking…</div></div>
+      <div class="btnrow" style="margin-top:0">
+        <button class="btn" id="checkRules">Check for updates</button>
+        <button class="btn" id="importRules">Import rules file</button>
+        <button class="btn brass" id="exportRules">Export rules.json</button>
+        <input type="file" id="rulesFileIn" accept="application/json,.json" class="hidden">
+      </div>
+    </div>
+    <div class="tbl-wrap"><table id="rulesTbl"></table></div>
+    <button class="btn addrow" id="addRule">+ Add rule</button>
+    <p class="footnote">The library loads from <b>rules.json</b> published beside the app. To push an amendment, edit rules.json (or use “Add rule” then “Export rules.json”), commit it in Working Copy and push — installed devices pick up the new version on their next online launch. Machine-readable rules should be approved by the designated Rule Approver / competent authority before they gate any decision. This library is the source register for that governance.</p>
+  </section>
+</main>
+
+<div id="printArea" style="display:none"></div>
+<div class="savebar" id="saveBar"><span class="msg">Unsaved changes</span>
+  <button class="btn brass" id="saveNow" style="margin-left:auto">Save now</button></div>
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+/* ---------------- Master checklist data (from PARIVESH State Government Master Scrutiny Checklist) ---------------- */
+const CHECKS = [{"id": "A01", "module": "A Proposal Identification", "checkpoint": "Correct PARIVESH proposal number is quoted consistently", "trigger": "All", "resp": "UA / Nodal", "evidence": "Portal record; proposal documents", "autocheck": "Match proposal ID across documents", "legal": "", "severity": "Critical"}, {"id": "A02", "module": "A Proposal Identification", "checkpoint": "Proposal title is consistent across portal and key documents", "trigger": "All", "resp": "UA", "evidence": "Portal; application; recommendations", "autocheck": "Text consistency check", "legal": "", "severity": "Major"}, {"id": "A03", "module": "A Proposal Identification", "checkpoint": "User Agency name and legal status are correctly stated", "trigger": "All", "resp": "UA", "evidence": "Authorization / constitution documents", "autocheck": "Cross-document entity match", "legal": "", "severity": "Major"}, {"id": "A04", "module": "A Proposal Identification", "checkpoint": "Authorized signatory and authorization are valid", "trigger": "All", "resp": "UA", "evidence": "Authorization letter", "autocheck": "Check name/designation/signature", "legal": "", "severity": "Major"}, {"id": "A05", "module": "A Proposal Identification", "checkpoint": "Project category and sub-category are correctly selected", "trigger": "All", "resp": "UA / Nodal", "evidence": "Portal application", "autocheck": "Rules-engine validation", "legal": "", "severity": "Major"}, {"id": "A06", "module": "A Proposal Identification", "checkpoint": "District, tehsil and village particulars are complete and consistent", "trigger": "All", "resp": "UA / DFO", "evidence": "Application; land schedule; maps", "autocheck": "Cross-document location match", "legal": "", "severity": "Major"}, {"id": "A07", "module": "A Proposal Identification", "checkpoint": "Forest division, range, block and compartment are correctly identified", "trigger": "All", "resp": "DFO", "evidence": "Forest records; maps", "autocheck": "GIS/document reconciliation", "legal": "", "severity": "Critical"}, {"id": "A08", "module": "A Proposal Identification", "checkpoint": "Total project area is correctly stated", "trigger": "All", "resp": "UA", "evidence": "Application; layout", "autocheck": "Numeric reconciliation", "legal": "", "severity": "Critical"}, {"id": "A09", "module": "A Proposal Identification", "checkpoint": "Forest area proposed for diversion is correctly stated", "trigger": "All", "resp": "UA / DFO", "evidence": "Application; land schedule; KML", "autocheck": "Numeric/GIS reconciliation", "legal": "", "severity": "Critical"}, {"id": "A10", "module": "A Proposal Identification", "checkpoint": "Non-forest land involved is correctly stated", "trigger": "Where applicable", "resp": "UA", "evidence": "Application; land records", "autocheck": "Area arithmetic", "legal": "", "severity": "Major"}, {"id": "A11", "module": "A Proposal Identification", "checkpoint": "Component-wise breakup of forest land is complete", "trigger": "All", "resp": "UA", "evidence": "Component schedule", "autocheck": "Sum components vs total", "legal": "", "severity": "Critical"}, {"id": "A12", "module": "A Proposal Identification", "checkpoint": "Proposal type is correctly identified: fresh/renewal/re-diversion/modification", "trigger": "All", "resp": "Nodal", "evidence": "Previous approvals; application", "autocheck": "Rules-engine validation", "legal": "", "severity": "Critical"}, {"id": "A13", "module": "A Proposal Identification", "checkpoint": "Earlier approvals are disclosed", "trigger": "If prior approval exists", "resp": "UA / DFO", "evidence": "Approval letters", "autocheck": "Search/reference reconciliation", "legal": "", "severity": "Critical"}, {"id": "A14", "module": "A Proposal Identification", "checkpoint": "Integrated project has not been artificially split", "trigger": "All", "resp": "DFO / CF / Nodal", "evidence": "Related proposals; project DPR", "autocheck": "Similarity/spatial review", "legal": "", "severity": "Critical"}, {"id": "A15", "module": "A Proposal Identification", "checkpoint": "Correct processing route and competent authority are identified", "trigger": "All", "resp": "Nodal", "evidence": "Applicable rules/guidelines", "autocheck": "Rules-engine validation", "legal": "", "severity": "Critical"}, {"id": "B01", "module": "B Legal Status", "checkpoint": "Legal status of every forest parcel is established", "trigger": "All", "resp": "DFO", "evidence": "Notifications; forest/revenue records", "autocheck": "Parcel-level reconciliation", "legal": "", "severity": "Critical"}, {"id": "B02", "module": "B Legal Status", "checkpoint": "Reserved/Protected/other recorded forest category is correctly identified", "trigger": "All", "resp": "DFO", "evidence": "Statutory records", "autocheck": "Document consistency", "legal": "", "severity": "Critical"}, {"id": "B03", "module": "B Legal Status", "checkpoint": "Relevant notification/order establishing forest status is referenced", "trigger": "Where available/applicable", "resp": "DFO", "evidence": "Notification/order", "autocheck": "Reference check", "legal": "", "severity": "Critical"}, {"id": "B04", "module": "B Legal Status", "checkpoint": "Revenue records correspond with proposal particulars", "trigger": "Where applicable", "resp": "DFO / UA", "evidence": "Khatauni/revenue extracts", "autocheck": "Parcel/name/area match", "legal": "", "severity": "Major"}, {"id": "B05", "module": "B Legal Status", "checkpoint": "Compartment/block details match maps and land schedule", "trigger": "All", "resp": "DFO", "evidence": "Forest map; schedule", "autocheck": "GIS/document match", "legal": "", "severity": "Critical"}, {"id": "B06", "module": "B Legal Status", "checkpoint": "Applicability under Section 1A is examined where doubt exists", "trigger": "Conditional", "resp": "Nodal", "evidence": "Legal note; records", "autocheck": "Mandatory legal-review trigger", "legal": "", "severity": "Critical"}, {"id": "B07", "module": "B Legal Status", "checkpoint": "Any statutory exemption/exclusion claimed is legally supported", "trigger": "Conditional", "resp": "Nodal", "evidence": "Rule/guideline/legal note", "autocheck": "Rules-engine validation", "legal": "", "severity": "Critical"}, {"id": "B08", "module": "B Legal Status", "checkpoint": "Existing lease, licence, rights and encumbrances are disclosed", "trigger": "Where applicable", "resp": "UA / DFO", "evidence": "Lease/rights records", "autocheck": "Disclosure check", "legal": "", "severity": "Major"}, {"id": "B09", "module": "B Legal Status", "checkpoint": "Previous diversion or change of land use is identified", "trigger": "Conditional", "resp": "DFO / Nodal", "evidence": "Prior approvals", "autocheck": "Historical record check", "legal": "", "severity": "Critical"}, {"id": "B10", "module": "B Legal Status", "checkpoint": "Pending litigation and binding court/NGT/CEC directions are disclosed", "trigger": "Conditional", "resp": "UA / DFO / Nodal", "evidence": "Case records/orders", "autocheck": "Legal-review trigger", "legal": "", "severity": "Critical"}, {"id": "B11", "module": "B Legal Status", "checkpoint": "Legal status is consistent across all documents", "trigger": "All", "resp": "System / State", "evidence": "All relevant documents", "autocheck": "Cross-document match", "legal": "", "severity": "Critical"}, {"id": "C01", "module": "C Area Reconciliation", "checkpoint": "Forest area in PARIVESH matches application form", "trigger": "All", "resp": "System / State", "evidence": "Portal; application", "autocheck": "Exact numeric match", "legal": "", "severity": "Critical"}, {"id": "C02", "module": "C Area Reconciliation", "checkpoint": "Forest area matches component-wise breakup", "trigger": "All", "resp": "System / State", "evidence": "Component schedule", "autocheck": "Sum vs total", "legal": "", "severity": "Critical"}, {"id": "C03", "module": "C Area Reconciliation", "checkpoint": "Forest area matches village-wise breakup", "trigger": "Where applicable", "resp": "System / State", "evidence": "Village schedule", "autocheck": "Sum vs total", "legal": "", "severity": "Critical"}, {"id": "C04", "module": "C Area Reconciliation", "checkpoint": "Forest area matches compartment-wise breakup", "trigger": "All", "resp": "System / State", "evidence": "Compartment schedule", "autocheck": "Sum vs total", "legal": "", "severity": "Critical"}, {"id": "C05", "module": "C Area Reconciliation", "checkpoint": "Forest area matches land schedule", "trigger": "All", "resp": "System / State", "evidence": "Land schedule", "autocheck": "Numeric match", "legal": "", "severity": "Critical"}, {"id": "C06", "module": "C Area Reconciliation", "checkpoint": "Forest area matches DFO recommendation and SIR", "trigger": "All", "resp": "System / State", "evidence": "DFO recommendation; SIR", "autocheck": "Numeric match", "legal": "", "severity": "Critical"}, {"id": "C07", "module": "C Area Reconciliation", "checkpoint": "Forest area matches CF recommendation", "trigger": "All", "resp": "System / State", "evidence": "CF recommendation", "autocheck": "Numeric match", "legal": "", "severity": "Critical"}, {"id": "C08", "module": "C Area Reconciliation", "checkpoint": "Forest area matches Nodal Officer recommendation", "trigger": "All", "resp": "System / State", "evidence": "Nodal recommendation", "autocheck": "Numeric match", "legal": "", "severity": "Critical"}, {"id": "C09", "module": "C Area Reconciliation", "checkpoint": "KML/KMZ calculated area is within prescribed tolerance", "trigger": "All", "resp": "System / GIS", "evidence": "KML/KMZ", "autocheck": "GIS area comparison", "legal": "", "severity": "Critical"}, {"id": "C10", "module": "C Area Reconciliation", "checkpoint": "Modification/re-diversion area reconciles with earlier approval", "trigger": "Conditional", "resp": "Nodal / State", "evidence": "Earlier approval", "autocheck": "Historical area reconciliation", "legal": "", "severity": "Critical"}, {"id": "D01", "module": "D GIS and Maps", "checkpoint": "Location map is available and readable", "trigger": "All", "resp": "UA / DFO", "evidence": "Location map", "autocheck": "Document presence/quality", "legal": "", "severity": "Major"}, {"id": "D02", "module": "D GIS and Maps", "checkpoint": "Forest compartment map is available", "trigger": "All", "resp": "DFO", "evidence": "Compartment map", "autocheck": "Document presence", "legal": "", "severity": "Critical"}, {"id": "D03", "module": "D GIS and Maps", "checkpoint": "Geo-referenced KML/KMZ is uploaded and opens correctly", "trigger": "All", "resp": "UA / DFO", "evidence": "KML/KMZ", "autocheck": "Geometry validation", "legal": "", "severity": "Critical"}, {"id": "D04", "module": "D GIS and Maps", "checkpoint": "Proposal polygon corresponds to stated project location", "trigger": "All", "resp": "GIS / DFO", "evidence": "KML; maps", "autocheck": "Spatial validation", "legal": "", "severity": "Critical"}, {"id": "D05", "module": "D GIS and Maps", "checkpoint": "Component-wise spatial breakup is identifiable", "trigger": "Where relevant", "resp": "UA / GIS", "evidence": "Layout; KML layers", "autocheck": "Spatial reconciliation", "legal": "", "severity": "Major"}, {"id": "D06", "module": "D GIS and Maps", "checkpoint": "Linear project alignment is correctly mapped", "trigger": "Linear projects", "resp": "UA / GIS", "evidence": "Alignment KML", "autocheck": "Geometry validation", "legal": "", "severity": "Critical"}, {"id": "D07", "module": "D GIS and Maps", "checkpoint": "CA land KML/KMZ is available and valid", "trigger": "Where CA applicable", "resp": "DFO / GIS", "evidence": "CA KML", "autocheck": "Geometry validation", "legal": "", "severity": "Critical"}, {"id": "D08", "module": "D GIS and Maps", "checkpoint": "Proposal is checked against Protected Areas and ESZ", "trigger": "All", "resp": "GIS / Nodal", "evidence": "Authoritative spatial layers", "autocheck": "Intersection/proximity analysis", "legal": "", "severity": "Critical"}, {"id": "D09", "module": "D GIS and Maps", "checkpoint": "Proposal is checked against Tiger Reserve/CTH and sensitive corridors", "trigger": "All", "resp": "GIS / Nodal", "evidence": "Authoritative spatial layers", "autocheck": "Intersection/proximity analysis", "legal": "", "severity": "Critical"}, {"id": "D10", "module": "D GIS and Maps", "checkpoint": "CA land does not overlap previously committed CA land", "trigger": "Where CA applicable", "resp": "GIS / Nodal", "evidence": "State CA registry", "autocheck": "Polygon overlap detection", "legal": "", "severity": "Critical"}, {"id": "D11", "module": "D GIS and Maps", "checkpoint": "Coordinates fall within stated administrative/forest jurisdiction", "trigger": "All", "resp": "GIS", "evidence": "KML; boundaries", "autocheck": "Spatial containment check", "legal": "", "severity": "Critical"}, {"id": "E01", "module": "E DFO and Site Inspection", "checkpoint": "Site Inspection Report is uploaded, signed and dated", "trigger": "All", "resp": "DFO", "evidence": "SIR", "autocheck": "Presence/signature/date check", "legal": "", "severity": "Critical"}, {"id": "E02", "module": "E DFO and Site Inspection", "checkpoint": "Inspecting officer and competence are identifiable", "trigger": "All", "resp": "DFO", "evidence": "SIR", "autocheck": "Designation check", "legal": "", "severity": "Major"}, {"id": "E03", "module": "E DFO and Site Inspection", "checkpoint": "Legal status and area are confirmed in SIR", "trigger": "All", "resp": "DFO", "evidence": "SIR", "autocheck": "Cross-document match", "legal": "", "severity": "Critical"}, {"id": "E04", "module": "E DFO and Site Inspection", "checkpoint": "Forest type, canopy density and eco-class are stated as applicable", "trigger": "All", "resp": "DFO", "evidence": "SIR", "autocheck": "Completeness check", "legal": "", "severity": "Major"}, {"id": "E05", "module": "E DFO and Site Inspection", "checkpoint": "Vegetation and species composition are adequately described", "trigger": "All", "resp": "DFO", "evidence": "SIR; enumeration", "autocheck": "Completeness check", "legal": "", "severity": "Major"}, {"id": "E06", "module": "E DFO and Site Inspection", "checkpoint": "Tree count in SIR reconciles with enumeration", "trigger": "Where trees affected", "resp": "DFO / System", "evidence": "SIR; enumeration", "autocheck": "Numeric match", "legal": "", "severity": "Critical"}, {"id": "E07", "module": "E DFO and Site Inspection", "checkpoint": "Erosion, slope and terrain implications are examined", "trigger": "Where relevant", "resp": "DFO", "evidence": "SIR", "autocheck": "Content check", "legal": "", "severity": "Major"}, {"id": "E08", "module": "E DFO and Site Inspection", "checkpoint": "Alternatives and minimum unavoidable forest area are examined", "trigger": "All", "resp": "DFO", "evidence": "SIR; alternative analysis", "autocheck": "Reasoning/content check", "legal": "", "severity": "Critical"}, {"id": "E09", "module": "E DFO and Site Inspection", "checkpoint": "Wildlife significance is specifically examined", "trigger": "All", "resp": "DFO", "evidence": "SIR", "autocheck": "Content/GIS consistency", "legal": "", "severity": "Critical"}, {"id": "E10", "module": "E DFO and Site Inspection", "checkpoint": "Violation status is explicitly recorded", "trigger": "All", "resp": "DFO", "evidence": "SIR", "autocheck": "Mandatory field check", "legal": "", "severity": "Critical"}, {"id": "E11", "module": "E DFO and Site Inspection", "checkpoint": "DFO recommendation is reasoned and project-specific", "trigger": "All", "resp": "DFO", "evidence": "Recommendation", "autocheck": "AI/manual reasoning quality check", "legal": "", "severity": "Critical"}, {"id": "E12", "module": "E DFO and Site Inspection", "checkpoint": "DFO conditions are specific and enforceable", "trigger": "Where conditions proposed", "resp": "DFO", "evidence": "Recommendation", "autocheck": "Content check", "legal": "", "severity": "Major"}, {"id": "F01", "module": "F Trees and Vegetation", "checkpoint": "Tree enumeration is attached and authenticated", "trigger": "Where trees affected", "resp": "DFO", "evidence": "Enumeration list", "autocheck": "Presence/authentication", "legal": "", "severity": "Critical"}, {"id": "F02", "module": "F Trees and Vegetation", "checkpoint": "Total tree count reconciles across all documents", "trigger": "Where trees affected", "resp": "System / State", "evidence": "Enumeration; SIR; recommendations", "autocheck": "Numeric match", "legal": "", "severity": "Critical"}, {"id": "F03", "module": "F Trees and Vegetation", "checkpoint": "Species-wise and applicable girth-class breakup is available", "trigger": "Where required", "resp": "DFO", "evidence": "Enumeration", "autocheck": "Completeness check", "legal": "", "severity": "Major"}, {"id": "F04", "module": "F Trees and Vegetation", "checkpoint": "Trees requiring felling are distinguished from trees retained", "trigger": "Where relevant", "resp": "DFO / UA", "evidence": "Enumeration; layout", "autocheck": "Cross-check", "legal": "", "severity": "Major"}, {"id": "F05", "module": "F Trees and Vegetation", "checkpoint": "Rare/endemic/threatened species implications are examined", "trigger": "Where relevant", "resp": "DFO", "evidence": "SIR; species list", "autocheck": "Flag species review", "legal": "", "severity": "Major"}, {"id": "F06", "module": "F Trees and Vegetation", "checkpoint": "Possibility of reducing tree felling is examined", "trigger": "Where trees affected", "resp": "DFO / CF", "evidence": "SIR/recommendation", "autocheck": "Reasoning check", "legal": "", "severity": "Major"}, {"id": "G01", "module": "G Alternatives and Site Specificity", "checkpoint": "Project/site specificity is established where required", "trigger": "All", "resp": "UA / DFO", "evidence": "Justification; DPR", "autocheck": "Reasoning check", "legal": "", "severity": "Critical"}, {"id": "G02", "module": "G Alternatives and Site Specificity", "checkpoint": "Alternative locations/alignments are documented", "trigger": "All except genuinely fixed-site cases", "resp": "UA", "evidence": "Alternative analysis", "autocheck": "Completeness check", "legal": "", "severity": "Critical"}, {"id": "G03", "module": "G Alternatives and Site Specificity", "checkpoint": "Alternatives compare forest area, tree loss and ecological impact", "trigger": "Where alternatives exist", "resp": "UA / DFO", "evidence": "Comparative statement", "autocheck": "Structured comparison", "legal": "", "severity": "Major"}, {"id": "G04", "module": "G Alternatives and Site Specificity", "checkpoint": "Reason for rejecting lower-impact alternative is recorded", "trigger": "Where relevant", "resp": "UA / DFO", "evidence": "Alternative analysis", "autocheck": "Reasoning check", "legal": "", "severity": "Critical"}, {"id": "G05", "module": "G Alternatives and Site Specificity", "checkpoint": "Existing infrastructure-sharing possibilities are examined", "trigger": "Where relevant", "resp": "UA / DFO", "evidence": "DPR/SIR", "autocheck": "Content check", "legal": "", "severity": "Major"}, {"id": "H01", "module": "H Violation and Prior Use", "checkpoint": "Work commencement and current site status are established", "trigger": "All", "resp": "DFO / UA", "evidence": "SIR; declaration", "autocheck": "Date/status check", "legal": "", "severity": "Critical"}, {"id": "H02", "module": "H Violation and Prior Use", "checkpoint": "Unauthorized work, if any, is quantified and reported", "trigger": "If violation exists", "resp": "DFO", "evidence": "Violation report", "autocheck": "Area/activity reconciliation", "legal": "", "severity": "Critical"}, {"id": "H03", "module": "H Violation and Prior Use", "checkpoint": "Historical imagery is examined in suspected violation cases", "trigger": "Conditional", "resp": "State / GIS", "evidence": "Satellite imagery", "autocheck": "Temporal GIS check", "legal": "", "severity": "Major"}, {"id": "H04", "module": "H Violation and Prior Use", "checkpoint": "Proposal is processed under correct violation procedure", "trigger": "If violation exists", "resp": "Nodal", "evidence": "Applicable guideline", "autocheck": "Rules-engine validation", "legal": "", "severity": "Critical"}, {"id": "H05", "module": "H Violation and Prior Use", "checkpoint": "Earlier approval conditions and compliance are checked", "trigger": "If earlier approval exists", "resp": "DFO / Nodal", "evidence": "Prior approval/compliance report", "autocheck": "Historical compliance check", "legal": "", "severity": "Critical"}, {"id": "I01", "module": "I Compensatory Afforestation", "checkpoint": "Applicable CA obligation is correctly determined", "trigger": "Where applicable", "resp": "Nodal / State", "evidence": "Rules/guidelines", "autocheck": "Rules-engine calculation", "legal": "", "severity": "Critical"}, {"id": "I02", "module": "I Compensatory Afforestation", "checkpoint": "Required CA area is correctly calculated", "trigger": "Where applicable", "resp": "System / State", "evidence": "Diversion area; rule", "autocheck": "Automated calculation", "legal": "", "severity": "Critical"}, {"id": "I03", "module": "I Compensatory Afforestation", "checkpoint": "Any CA exemption/relaxation is legally supported", "trigger": "Conditional", "resp": "Nodal", "evidence": "Applicable order/guideline", "autocheck": "Legal-rule validation", "legal": "", "severity": "Critical"}, {"id": "I04", "module": "I Compensatory Afforestation", "checkpoint": "CA land is identified with ownership and legal status", "trigger": "Where applicable", "resp": "DFO", "evidence": "Land records", "autocheck": "Document reconciliation", "legal": "", "severity": "Critical"}, {"id": "I05", "module": "I Compensatory Afforestation", "checkpoint": "CA land schedule and revenue records are complete", "trigger": "Where applicable", "resp": "DFO", "evidence": "Schedule; records", "autocheck": "Parcel reconciliation", "legal": "", "severity": "Critical"}, {"id": "I06", "module": "I Compensatory Afforestation", "checkpoint": "Possession, mutation and encumbrance status meet applicable requirements", "trigger": "Conditional", "resp": "DFO / State", "evidence": "Certificates/records", "autocheck": "Rules-engine check", "legal": "", "severity": "Critical"}, {"id": "I07", "module": "I Compensatory Afforestation", "checkpoint": "DFO suitability certificate and site inspection are available", "trigger": "Where applicable", "resp": "DFO", "evidence": "Suitability certificate; SIR", "autocheck": "Presence/content check", "legal": "", "severity": "Critical"}, {"id": "I08", "module": "I Compensatory Afforestation", "checkpoint": "CA KML area matches committed CA area", "trigger": "Where applicable", "resp": "GIS / System", "evidence": "CA KML", "autocheck": "GIS numeric match", "legal": "", "severity": "Critical"}, {"id": "I09", "module": "I Compensatory Afforestation", "checkpoint": "CA land does not duplicate or overlap another commitment", "trigger": "Where applicable", "resp": "GIS / State", "evidence": "CA registry", "autocheck": "Overlap detection", "legal": "", "severity": "Critical"}, {"id": "I10", "module": "I Compensatory Afforestation", "checkpoint": "Detailed CA scheme is attached and covers correct area", "trigger": "Where applicable", "resp": "DFO", "evidence": "CA scheme", "autocheck": "Area/document match", "legal": "", "severity": "Critical"}, {"id": "I11", "module": "I Compensatory Afforestation", "checkpoint": "Species, planting density and site treatment are appropriate", "trigger": "Where applicable", "resp": "DFO", "evidence": "CA scheme", "autocheck": "Technical review", "legal": "", "severity": "Major"}, {"id": "I12", "module": "I Compensatory Afforestation", "checkpoint": "Soil/moisture conservation and protection measures are included", "trigger": "Where applicable", "resp": "DFO", "evidence": "CA scheme", "autocheck": "Completeness check", "legal": "", "severity": "Major"}, {"id": "I13", "module": "I Compensatory Afforestation", "checkpoint": "Maintenance and monitoring provisions are included", "trigger": "Where applicable", "resp": "DFO", "evidence": "CA scheme", "autocheck": "Completeness check", "legal": "", "severity": "Major"}, {"id": "I14", "module": "I Compensatory Afforestation", "checkpoint": "Cost estimates use current applicable rates and are arithmetically correct", "trigger": "Where applicable", "resp": "DFO / System", "evidence": "CA estimate", "autocheck": "Rate/arithmetic check", "legal": "", "severity": "Major"}, {"id": "I15", "module": "I Compensatory Afforestation", "checkpoint": "CA scheme is approved by competent authority", "trigger": "Where applicable", "resp": "DFO / CF", "evidence": "Approved scheme", "autocheck": "Authority check", "legal": "", "severity": "Critical"}, {"id": "J01", "module": "J NPV and Financial Liabilities", "checkpoint": "NPV applicability and applicable category/rate are correctly identified", "trigger": "All", "resp": "Nodal / State", "evidence": "Applicable orders; forest data", "autocheck": "Rules-engine check", "legal": "", "severity": "Critical"}, {"id": "J02", "module": "J NPV and Financial Liabilities", "checkpoint": "Eco-class and density used for NPV are correct", "trigger": "Where NPV applies", "resp": "DFO / Nodal", "evidence": "SIR; calculation", "autocheck": "Cross-document check", "legal": "", "severity": "Critical"}, {"id": "J03", "module": "J NPV and Financial Liabilities", "checkpoint": "NPV and other compensatory liabilities are correctly calculated/identified", "trigger": "Where applicable", "resp": "System / State", "evidence": "Calculation sheets", "autocheck": "Automated calculation", "legal": "", "severity": "Major"}, {"id": "J04", "module": "J NPV and Financial Liabilities", "checkpoint": "Any exemption from financial liability is legally supported", "trigger": "Conditional", "resp": "Nodal", "evidence": "Applicable order", "autocheck": "Legal-rule validation", "legal": "", "severity": "Critical"}, {"id": "J05", "module": "J NPV and Financial Liabilities", "checkpoint": "User Agency undertaking to bear applicable costs is available", "trigger": "Where required", "resp": "UA", "evidence": "Undertaking", "autocheck": "Presence check", "legal": "", "severity": "Major"}, {"id": "K01", "module": "K FRA and Rights", "checkpoint": "FRA compliance status is explicitly recorded", "trigger": "All", "resp": "Nodal / State", "evidence": "FRA records/status", "autocheck": "Mandatory status field", "legal": "", "severity": "Critical"}, {"id": "K02", "module": "K FRA and Rights", "checkpoint": "Applicable FRA procedural requirement and stage are correctly identified", "trigger": "All", "resp": "Nodal", "evidence": "Current procedure/guideline", "autocheck": "Rules-engine validation", "legal": "", "severity": "Critical"}, {"id": "K03", "module": "K FRA and Rights", "checkpoint": "Competent authority documentation is available at required stage", "trigger": "Conditional", "resp": "District authority / Nodal", "evidence": "Certificate/records", "autocheck": "Authority/stage check", "legal": "", "severity": "Critical"}, {"id": "K04", "module": "K FRA and Rights", "checkpoint": "Village names and areas reconcile with proposal", "trigger": "Where FRA documentation exists", "resp": "System / State", "evidence": "FRA documents; proposal", "autocheck": "OCR/data match", "legal": "", "severity": "Critical"}, {"id": "K05", "module": "K FRA and Rights", "checkpoint": "Rights and Gram Sabha documentation are examined where applicable", "trigger": "Conditional", "resp": "Nodal", "evidence": "Relevant records", "autocheck": "Completeness check", "legal": "", "severity": "Critical"}, {"id": "L01", "module": "L Wildlife and Ecology", "checkpoint": "Protected Area/ESZ intersection and proximity are verified", "trigger": "All", "resp": "GIS / Nodal", "evidence": "Spatial layers", "autocheck": "GIS check", "legal": "", "severity": "Critical"}, {"id": "L02", "module": "L Wildlife and Ecology", "checkpoint": "Tiger Reserve/CTH/corridor sensitivity is verified", "trigger": "All", "resp": "GIS / Nodal", "evidence": "Spatial layers", "autocheck": "GIS check", "legal": "", "severity": "Critical"}, {"id": "L03", "module": "L Wildlife and Ecology", "checkpoint": "Other significant wildlife movement/habitat issues are examined", "trigger": "All", "resp": "DFO / Nodal", "evidence": "SIR; GIS; expert inputs", "autocheck": "Content/spatial check", "legal": "", "severity": "Critical"}, {"id": "L04", "module": "L Wildlife and Ecology", "checkpoint": "CWLW comments are obtained where applicable", "trigger": "Conditional", "resp": "Nodal", "evidence": "CWLW comments", "autocheck": "Rules-engine trigger", "legal": "", "severity": "Critical"}, {"id": "L05", "module": "L Wildlife and Ecology", "checkpoint": "Wildlife mitigation plan is adequate and costed where required", "trigger": "Conditional", "resp": "UA / DFO / CWLW", "evidence": "Mitigation plan", "autocheck": "Technical/content check", "legal": "", "severity": "Critical"}, {"id": "L06", "module": "L Wildlife and Ecology", "checkpoint": "SBWL/NBWL/NTCA/CEC/Supreme Court requirements are correctly identified", "trigger": "Conditional", "resp": "Nodal / State", "evidence": "Applicable law/orders", "autocheck": "Rules-engine trigger", "legal": "", "severity": "Critical"}, {"id": "L07", "module": "L Wildlife and Ecology", "checkpoint": "Forest and wildlife clearance proposal details are consistent", "trigger": "Where wildlife clearance involved", "resp": "System / State", "evidence": "Both proposals", "autocheck": "Cross-system match", "legal": "", "severity": "Critical"}, {"id": "M01", "module": "M Other Statutory Clearances", "checkpoint": "Environmental Clearance requirement/status is identified", "trigger": "Conditional", "resp": "UA / Nodal", "evidence": "EC records", "autocheck": "Rules-engine/status check", "legal": "", "severity": "Major"}, {"id": "M02", "module": "M Other Statutory Clearances", "checkpoint": "Pollution control approvals are identified where relevant", "trigger": "Conditional", "resp": "UA", "evidence": "Consent records", "autocheck": "Applicability check", "legal": "", "severity": "Major"}, {"id": "M03", "module": "M Other Statutory Clearances", "checkpoint": "Mining/CRZ/archaeological/river/defence or other special approvals are identified", "trigger": "Conditional", "resp": "UA / Nodal", "evidence": "Relevant approvals", "autocheck": "Rules-engine check", "legal": "", "severity": "Major"}, {"id": "M04", "module": "M Other Statutory Clearances", "checkpoint": "Required sequencing of related approvals is correctly identified", "trigger": "Conditional", "resp": "Nodal / State", "evidence": "Applicable rules/orders", "autocheck": "Workflow rule check", "legal": "", "severity": "Critical"}, {"id": "N01", "module": "N Project-Specific Technical", "checkpoint": "Applicable project-specific checklist is activated", "trigger": "All", "resp": "System / Nodal", "evidence": "Project category", "autocheck": "Rules-engine trigger", "legal": "", "severity": "Critical"}, {"id": "N02", "module": "N Project-Specific Technical", "checkpoint": "Road proposal: ROW, length, width, widening and muck disposal are verified", "trigger": "Roads", "resp": "UA / DFO", "evidence": "DPR; layout", "autocheck": "Technical reconciliation", "legal": "", "severity": "Critical"}, {"id": "N03", "module": "N Project-Specific Technical", "checkpoint": "Transmission proposal: voltage, ROW, towers and felling/lopping are verified", "trigger": "Transmission", "resp": "UA / DFO", "evidence": "DPR; alignment", "autocheck": "Technical reconciliation", "legal": "", "severity": "Critical"}, {"id": "N04", "module": "N Project-Specific Technical", "checkpoint": "Hydropower proposal: components and ancillary land uses are fully captured", "trigger": "Hydropower", "resp": "UA / DFO", "evidence": "DPR; layout", "autocheck": "Component reconciliation", "legal": "", "severity": "Critical"}, {"id": "N05", "module": "N Project-Specific Technical", "checkpoint": "Mining proposal: lease boundary, safety zone and approvals are reconciled", "trigger": "Mining", "resp": "UA / DFO", "evidence": "Lease; mining plan", "autocheck": "GIS/document match", "legal": "", "severity": "Critical"}, {"id": "N06", "module": "N Project-Specific Technical", "checkpoint": "Pipeline/OFC proposal: working width, trench and restoration are verified", "trigger": "Pipeline/OFC", "resp": "UA / DFO", "evidence": "DPR; alignment", "autocheck": "Technical reconciliation", "legal": "", "severity": "Major"}, {"id": "N07", "module": "N Project-Specific Technical", "checkpoint": "Building/public utility proposal: site specificity and alternatives are verified", "trigger": "Buildings/utilities", "resp": "UA / DFO", "evidence": "Justification", "autocheck": "Reasoning check", "legal": "", "severity": "Critical"}, {"id": "O01", "module": "O CF Scrutiny", "checkpoint": "CF recommendation is uploaded and independently reasoned", "trigger": "All", "resp": "CF", "evidence": "Recommendation", "autocheck": "Presence/reasoning check", "legal": "", "severity": "Critical"}, {"id": "O02", "module": "O CF Scrutiny", "checkpoint": "CF verifies area, legal status and DFO findings", "trigger": "All", "resp": "CF", "evidence": "Recommendation", "autocheck": "Cross-document check", "legal": "", "severity": "Critical"}, {"id": "O03", "module": "O CF Scrutiny", "checkpoint": "CF examines alternatives, CA, wildlife and violation issues", "trigger": "As applicable", "resp": "CF", "evidence": "Recommendation", "autocheck": "Completeness check", "legal": "", "severity": "Critical"}, {"id": "O04", "module": "O CF Scrutiny", "checkpoint": "Any disagreement with DFO is expressly reasoned", "trigger": "Conditional", "resp": "CF", "evidence": "Recommendation", "autocheck": "Reasoning check", "legal": "", "severity": "Major"}, {"id": "P01", "module": "P Nodal Officer Scrutiny", "checkpoint": "Nodal Officer examines complete proposal and correct statutory route", "trigger": "All", "resp": "Nodal", "evidence": "Recommendation", "autocheck": "Rules/content check", "legal": "", "severity": "Critical"}, {"id": "P02", "module": "P Nodal Officer Scrutiny", "checkpoint": "Area, legal status and Section 1A issues are examined", "trigger": "All/Conditional", "resp": "Nodal", "evidence": "Recommendation/legal records", "autocheck": "Cross-check", "legal": "", "severity": "Critical"}, {"id": "P03", "module": "P Nodal Officer Scrutiny", "checkpoint": "DFO and CF recommendations are substantively reviewed", "trigger": "All", "resp": "Nodal", "evidence": "Recommendation", "autocheck": "Content check", "legal": "", "severity": "Critical"}, {"id": "P04", "module": "P Nodal Officer Scrutiny", "checkpoint": "CA, NPV, FRA, wildlife and violation positions are examined", "trigger": "As applicable", "resp": "Nodal", "evidence": "Recommendation", "autocheck": "Completeness check", "legal": "", "severity": "Critical"}, {"id": "P05", "module": "P Nodal Officer Scrutiny", "checkpoint": "Previous approvals and applicable special guidelines are identified", "trigger": "Conditional", "resp": "Nodal", "evidence": "Records/guidelines", "autocheck": "Historical/rule check", "legal": "", "severity": "Major"}, {"id": "P06", "module": "P Nodal Officer Scrutiny", "checkpoint": "All material deficiencies are resolved before recommendation", "trigger": "All", "resp": "Nodal", "evidence": "Deficiency correspondence", "autocheck": "Open-item check", "legal": "", "severity": "Critical"}, {"id": "P07", "module": "P Nodal Officer Scrutiny", "checkpoint": "Recommended area exactly matches proposal forwarded", "trigger": "All", "resp": "System / Nodal", "evidence": "Recommendation; portal", "autocheck": "Numeric match", "legal": "", "severity": "Critical"}, {"id": "Q01", "module": "Q Cross-Document Consistency", "checkpoint": "Proposal title matches across decision documents", "trigger": "All", "resp": "System", "evidence": "All documents", "autocheck": "Text match", "legal": "", "severity": "Major"}, {"id": "Q02", "module": "Q Cross-Document Consistency", "checkpoint": "User Agency and location identifiers match", "trigger": "All", "resp": "System", "evidence": "All documents", "autocheck": "Entity match", "legal": "", "severity": "Major"}, {"id": "Q03", "module": "Q Cross-Document Consistency", "checkpoint": "Forest area and component areas match", "trigger": "All", "resp": "System", "evidence": "All documents", "autocheck": "Numeric match", "legal": "", "severity": "Critical"}, {"id": "Q04", "module": "Q Cross-Document Consistency", "checkpoint": "Tree count and vegetation figures match", "trigger": "Where applicable", "resp": "System", "evidence": "All documents", "autocheck": "Numeric/text match", "legal": "", "severity": "Critical"}, {"id": "Q05", "module": "Q Cross-Document Consistency", "checkpoint": "Forest density and eco-class are consistent", "trigger": "Where applicable", "resp": "System", "evidence": "SIR; calculations", "autocheck": "Data match", "legal": "", "severity": "Major"}, {"id": "Q06", "module": "Q Cross-Document Consistency", "checkpoint": "CA requirement, CA area and CA KML area match", "trigger": "Where applicable", "resp": "System", "evidence": "All CA records", "autocheck": "Numeric/GIS match", "legal": "", "severity": "Critical"}, {"id": "Q07", "module": "Q Cross-Document Consistency", "checkpoint": "Violation and wildlife status are consistent", "trigger": "All", "resp": "System", "evidence": "All documents", "autocheck": "Semantic consistency check", "legal": "", "severity": "Critical"}, {"id": "Q08", "module": "Q Cross-Document Consistency", "checkpoint": "DFO, CF and Nodal recommended areas match", "trigger": "All", "resp": "System", "evidence": "Recommendations", "autocheck": "Numeric match", "legal": "", "severity": "Critical"}, {"id": "R01", "module": "R Document Authenticity and Quality", "checkpoint": "Required document is uploaded under correct heading", "trigger": "All", "resp": "UA / DFO / Nodal", "evidence": "Portal documents", "autocheck": "Inventory check", "legal": "", "severity": "Major"}, {"id": "R02", "module": "R Document Authenticity and Quality", "checkpoint": "Document is complete and readable", "trigger": "All", "resp": "System / State", "evidence": "Uploaded file", "autocheck": "OCR/readability check", "legal": "", "severity": "Major"}, {"id": "R03", "module": "R Document Authenticity and Quality", "checkpoint": "Signature, designation and date are present where required", "trigger": "All", "resp": "System / State", "evidence": "Uploaded file", "autocheck": "OCR/metadata check", "legal": "", "severity": "Critical"}, {"id": "R04", "module": "R Document Authenticity and Quality", "checkpoint": "Signatory is competent for the document", "trigger": "Conditional", "resp": "State", "evidence": "Delegation/rules", "autocheck": "Authority validation", "legal": "", "severity": "Critical"}, {"id": "R05", "module": "R Document Authenticity and Quality", "checkpoint": "No blank, unrelated or superseded document is used for decision", "trigger": "All", "resp": "System / State", "evidence": "Uploaded files", "autocheck": "Classification/version check", "legal": "", "severity": "Critical"}, {"id": "R06", "module": "R Document Authenticity and Quality", "checkpoint": "Material alteration or contradictory versions are flagged", "trigger": "All", "resp": "System / State", "evidence": "Document versions", "autocheck": "Version/semantic comparison", "legal": "", "severity": "Critical"}, {"id": "S01", "module": "S State Government Final Scrutiny", "checkpoint": "Proposal is complete and correct legal framework is applied", "trigger": "All", "resp": "State Government", "evidence": "Complete case record", "autocheck": "Final gate", "legal": "", "severity": "Critical"}, {"id": "S02", "module": "S State Government Final Scrutiny", "checkpoint": "Forest area and GIS verification have passed", "trigger": "All", "resp": "State Government", "evidence": "Reconciliation/GIS report", "autocheck": "Final gate", "legal": "", "severity": "Critical"}, {"id": "S03", "module": "S State Government Final Scrutiny", "checkpoint": "Legal status is conclusively established for processing", "trigger": "All", "resp": "State Government", "evidence": "Legal/forest records", "autocheck": "Final gate", "legal": "", "severity": "Critical"}, {"id": "S04", "module": "S State Government Final Scrutiny", "checkpoint": "DFO, CF and Nodal scrutiny are adequate", "trigger": "All", "resp": "State Government", "evidence": "Recommendations", "autocheck": "Final gate", "legal": "", "severity": "Critical"}, {"id": "S05", "module": "S State Government Final Scrutiny", "checkpoint": "Trees, alternatives and minimum forest requirement are adequately examined", "trigger": "All", "resp": "State Government", "evidence": "Technical reports", "autocheck": "Final gate", "legal": "", "severity": "Critical"}, {"id": "S06", "module": "S State Government Final Scrutiny", "checkpoint": "CA and NPV obligations are correctly identified", "trigger": "As applicable", "resp": "State Government", "evidence": "CA/NPV records", "autocheck": "Final gate", "legal": "", "severity": "Critical"}, {"id": "S07", "module": "S State Government Final Scrutiny", "checkpoint": "FRA and wildlife procedural positions are compliant for current stage", "trigger": "As applicable", "resp": "State Government", "evidence": "Relevant records", "autocheck": "Final gate", "legal": "", "severity": "Critical"}, {"id": "S08", "module": "S State Government Final Scrutiny", "checkpoint": "Violation position is established and correctly processed", "trigger": "All", "resp": "State Government", "evidence": "Violation records", "autocheck": "Final gate", "legal": "", "severity": "Critical"}, {"id": "S09", "module": "S State Government Final Scrutiny", "checkpoint": "No unresolved critical discrepancy remains", "trigger": "All", "resp": "State Government", "evidence": "Red Flag Register", "autocheck": "Open-critical count", "legal": "", "severity": "Critical"}, {"id": "S10", "module": "S State Government Final Scrutiny", "checkpoint": "State recommendation is reasoned and competent authority has approved forwarding", "trigger": "All", "resp": "State Government", "evidence": "Approval/recommendation", "autocheck": "Final gate", "legal": "", "severity": "Critical"}, {"id": "T01", "module": "T Stop Conditions", "checkpoint": "STOP: unresolved forest area mismatch", "trigger": "If mismatch exists", "resp": "System / State", "evidence": "Reconciliation report", "autocheck": "Blocking rule", "legal": "", "severity": "Critical"}, {"id": "T02", "module": "T Stop Conditions", "checkpoint": "STOP: unresolved doubt regarding legal status/applicability", "trigger": "If doubt exists", "resp": "State", "evidence": "Legal review", "autocheck": "Blocking rule", "legal": "", "severity": "Critical"}, {"id": "T03", "module": "T Stop Conditions", "checkpoint": "STOP: invalid or materially mismatched KML", "trigger": "If GIS failure exists", "resp": "GIS / State", "evidence": "GIS report", "autocheck": "Blocking rule", "legal": "", "severity": "Critical"}, {"id": "T04", "module": "T Stop Conditions", "checkpoint": "STOP: unresolved violation", "trigger": "If violation issue exists", "resp": "State", "evidence": "Violation report", "autocheck": "Blocking rule", "legal": "", "severity": "Critical"}, {"id": "T05", "module": "T Stop Conditions", "checkpoint": "STOP: mandatory CA deficiency at relevant stage", "trigger": "Where applicable", "resp": "State", "evidence": "CA records", "autocheck": "Blocking rule", "legal": "", "severity": "Critical"}, {"id": "T06", "module": "T Stop Conditions", "checkpoint": "STOP: duplicate/overlapping CA land", "trigger": "Where applicable", "resp": "GIS / State", "evidence": "CA registry", "autocheck": "Blocking rule", "legal": "", "severity": "Critical"}, {"id": "T07", "module": "T Stop Conditions", "checkpoint": "STOP: material wildlife issue not examined", "trigger": "If wildlife flag exists", "resp": "State", "evidence": "Wildlife review", "autocheck": "Blocking rule", "legal": "", "severity": "Critical"}, {"id": "T08", "module": "T Stop Conditions", "checkpoint": "STOP: mandatory FRA procedural requirement not met", "trigger": "Where applicable", "resp": "State", "evidence": "FRA records", "autocheck": "Blocking rule", "legal": "", "severity": "Critical"}, {"id": "T09", "module": "T Stop Conditions", "checkpoint": "STOP: DFO/CF/Nodal recommendations concern different area/configuration", "trigger": "If mismatch exists", "resp": "System / State", "evidence": "Recommendations", "autocheck": "Blocking rule", "legal": "", "severity": "Critical"}, {"id": "T10", "module": "T Stop Conditions", "checkpoint": "STOP: mandatory statutory document absent", "trigger": "If absent", "resp": "System / State", "evidence": "Document inventory", "autocheck": "Blocking rule", "legal": "", "severity": "Critical"}];
+
+/* ---------------- Storage (localStorage; degrades gracefully in sandbox) ---------------- */
+const KEY="van-anumodan-case-v1";
+let mem=null;
+function loadState(){
+  try{const r=localStorage.getItem(KEY);return r?JSON.parse(r):null;}catch(e){return mem;}
+}
+function persist(){
+  try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){mem=JSON.parse(JSON.stringify(state));}
+  hideSaveBar();
+}
+
+/* ---------------- State ---------------- */
+const PROP_FIELDS=[
+  ["proposalNo","PARIVESH proposal no."],["name","Proposal name"],["ua","User agency"],
+  ["district","District"],["division","Forest division"],
+  ["totalArea","Total project area (ha)","num"],["forestArea","Forest area proposed (ha)","num"],
+  ["kmlArea","KML calculated area (ha)","num"],
+  ["dfoArea","DFO recommended (ha)","num"],["cfArea","CF recommended (ha)","num"],
+  ["nodalArea","Nodal recommended (ha)","num"],
+  ["officer","Scrutiny officer"],["date","Date of scrutiny","date"]
+];
+const FLAGS=[
+  ["caApplicable","Compensatory afforestation applies"],
+  ["treesAffected","Trees affected / felling"],
+  ["violationExists","Violation / prior work exists"],
+  ["priorApproval","Earlier approval exists"],
+  ["npvApplies","NPV applies"],
+  ["fraDocs","FRA documentation exists"],
+  ["wildlifeClearance","Wildlife clearance involved"],
+  ["isLinear","Linear project"]
+];
+function blankCheckState(){const o={};CHECKS.forEach(c=>o[c.id]={status:"Not Checked",remark:"",override:false,order:""});return o;}
+function newState(){
+  return {
+    prop:{}, flags:{}, pcat:"",
+    checks:blankCheckState(),
+    area:{portal:"",tol:"0.0100",rows:{}},
+    ca:[], gis:{}, docs:{}, flagsReg:[], rules:[]
+  };
+}
+let state = loadState() || newState();
+// migrate missing keys
+(function migrate(){
+  if(!state.checks) state.checks=blankCheckState();
+  CHECKS.forEach(c=>{ if(!state.checks[c.id]) state.checks[c.id]={status:"Not Checked",remark:"",override:false,order:""};});
+  ["prop","flags"].forEach(k=>{if(!state[k])state[k]={};});
+  if(!state.area) state.area={portal:"",tol:"0.0100",rows:{}};
+  if(!state.ca) state.ca=[]; if(!state.gis) state.gis={}; if(!state.docs) state.docs={};
+  if(!state.flagsReg) state.flagsReg=[]; if(!state.rules) state.rules=[];
+})();
+
+/* ---------------- Applicability engine (FR-05) ---------------- */
+const CAT_TRIGGERS={"Roads":"Roads","Transmission":"Transmission","Hydropower":"Hydropower",
+  "Mining":"Mining","Pipeline/OFC":"Pipeline/OFC","Buildings/utilities":"Buildings/utilities"};
+function isApplicable(c){
+  const t=c.trigger, cp=(c.checkpoint||"").toLowerCase(), f=state.flags||{};
+  if(CAT_TRIGGERS[t]) return state.pcat===t;
+  if(t==="Linear projects") return !!f.isLinear || ["Roads","Transmission","Pipeline/OFC"].includes(state.pcat);
+  if(t==="Where CA applicable") return !!f.caApplicable;
+  if(t==="Where trees affected") return !!f.treesAffected;
+  if(t==="Where NPV applies") return !!f.npvApplies;
+  if(t==="If violation exists"||t==="If violation issue exists") return !!f.violationExists;
+  if(t==="If prior approval exists"||t==="If earlier approval exists") return !!f.priorApproval;
+  if(t==="Where FRA documentation exists") return !!f.fraDocs;
+  if(t==="Where wildlife clearance involved") return !!f.wildlifeClearance;
+  // CA module conditional/where-applicable rows tied to CA flag
+  if((c.module||"").startsWith("I ")){ if(t!=="All") return !!f.caApplicable; }
+  if(cp.includes(" ca ")||cp.startsWith("ca ")||cp.includes("compensatory")){ if(t!=="All") return !!f.caApplicable; }
+  // everything else defaults applicable; officer may mark Not Applicable
+  return true;
+}
+// effective status considering N/A override & speaking-order override
+const NONOVERRIDABLE=(c)=> (c.module||"").startsWith("T ") || (c.module||"").startsWith("S ");
+function chkOf(id){return state.checks[id];}
+function isResolved(c){
+  const s=chkOf(c.id);
+  if(!isApplicable(c)) return true;
+  if(s.status==="Compliant"||s.status==="Not Applicable") return true;
+  if((s.status==="Non-Compliant"||s.status==="Clarification") && s.override && s.order.trim() && !NONOVERRIDABLE(c)) return true;
+  return false;
+}
+function isUnresolved(c){return isApplicable(c)&&!isResolved(c);}
+
+/* ---------------- Verdict / gate (FR-16 · §13) ---------------- */
+function computeVerdict(){
+  let appl=0,compliant=0,critOpen=[],majorOpen=[],notChecked=0,stopHit=[];
+  CHECKS.forEach(c=>{
+    if(!isApplicable(c)) return;
+    appl++;
+    const s=chkOf(c.id);
+    if(s.status==="Compliant"||s.status==="Not Applicable"){compliant++;return;}
+    if(s.status==="Not Checked") notChecked++;
+    if(isUnresolved(c)){
+      if(c.severity==="Critical") critOpen.push(c); else majorOpen.push(c);
+      if((c.module||"").startsWith("T ") && s.status==="Non-Compliant") stopHit.push(c);
+    }
+  });
+  const critFlags=state.flagsReg.filter(f=>f.status!=="Closed"&&f.severity==="Critical");
+  let level="n",label="No proposal",blockers=[];
+  const hasProp = (state.prop.proposalNo||state.prop.name);
+  if(!hasProp){ level="n"; label="No proposal set"; }
+  else if(critOpen.length||stopHit.length||critFlags.length){
+    level="r"; label="Not ready for forwarding";
+    const seen=new Set();
+    critOpen.forEach(c=>{if(!seen.has(c.id)){seen.add(c.id);blockers.push({id:c.id,t:c.checkpoint});}});
+    critFlags.forEach(f=>blockers.push({id:f.id,t:f.def+" (red flag)"}));
+  } else if(majorOpen.length||notChecked){
+    level="a"; label="Requires officer review";
+    majorOpen.slice(0,6).forEach(c=>blockers.push({id:c.id,t:c.checkpoint}));
+    if(notChecked) blockers.push({id:"—",t:notChecked+" applicable control(s) not yet checked"});
+  } else {
+    level="g"; label="Ready for forwarding";
+  }
+  const pct = appl? Math.round(compliant/appl*100):0;
+  return {level,label,blockers,appl,compliant,pct,critOpen,majorOpen,notChecked,stopHit,critFlags};
+}
+
+/* ---------------- Rendering ---------------- */
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+function esc(s){return (s==null?"":String(s)).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));}
+function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("show");clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove("show"),1800);}
+let dirty=false;
+function markDirty(){dirty=true;$("#saveBar").classList.add("show");}
+function hideSaveBar(){dirty=false;$("#saveBar").classList.remove("show");}
+
+function renderHeaderVerdict(v){
+  const el=$("#hdrVerdict");el.className="vchip "+v.level;el.textContent=v.label;
+}
+
+function renderDashboard(){
+  const v=computeVerdict();
+  renderHeaderVerdict(v);
+  $("#dashTitle").textContent = state.prop.name || state.prop.proposalNo || "Proposal Dashboard";
+  $("#dashSub").textContent = state.prop.proposalNo ? ("PARIVESH "+state.prop.proposalNo+(state.prop.division?" · "+state.prop.division:"")+(state.prop.district?" · "+state.prop.district:"")) : "Set up a proposal to begin evidence-linked scrutiny of a PARIVESH forest-diversion package.";
+  { const hp = state.prop.proposalNo||state.prop.name; const dl=$("#dashLogo"); if(dl) dl.style.display = hp ? "none" : "flex"; }
+
+  // verdict panel
+  const p=$("#verdictPanel");
+  const ok=v.level==="g";
+  let bl="";
+  if(v.blockers.length){
+    bl=`<div class="blockers ${ok?'ok':''}"><div class="bt">${v.level==='r'?'Blocking conditions':'Items to resolve'}</div><ul>`+
+       v.blockers.map(b=>`<li><span class="bid">${esc(b.id)}</span><span>${esc(b.t)}</span></li>`).join("")+`</ul></div>`;
+  } else if(v.level==="g"){
+    bl=`<div class="blockers ok"><div class="bt">All gates cleared</div><ul><li><span class="bid">✓</span><span>No unresolved applicable critical control, stop condition or open critical flag.</span></li></ul></div>`;
+  }
+  p.innerHTML = `<div class="verdict ${v.level}"><div class="stampring"></div>
+    <div class="vlabel">System verdict · fail-safe gate</div>
+    <h3>${esc(v.label)}</h3>
+    <div class="vsc">Management score ${v.pct}% · ${v.compliant}/${v.appl} applicable controls resolved · not a readiness determinant</div>
+    ${bl}</div>`;
+
+  // stat cards
+  const totalCrit=CHECKS.filter(c=>c.severity==="Critical"&&isApplicable(c)).length;
+  $("#statCards").innerHTML=[
+    ["Applicable controls",v.appl,""],
+    ["Resolved",v.compliant,"ok"],
+    ["Open critical",v.critOpen.length,v.critOpen.length?"bad":"ok"],
+    ["Open red flags",state.flagsReg.filter(f=>f.status!=="Closed").length,state.flagsReg.filter(f=>f.status!=="Closed").length?"warn":"ok"]
+  ].map(([k,val,cl])=>`<div class="stat"><div class="k">${k}</div><div class="v ${cl}">${val}</div></div>`).join("");
+
+  // module progress
+  const mods={};CHECKS.forEach(c=>{const m=c.module;if(!mods[m])mods[m]={ok:0,bad:0,neu:0,appl:0,total:0};
+    mods[m].total++; if(!isApplicable(c))return; mods[m].appl++;
+    const s=chkOf(c.id).status;
+    if(s==="Compliant"||s==="Not Applicable")mods[m].ok++;
+    else if(isUnresolved(c)&&s!=="Not Checked")mods[m].bad++;
+    else mods[m].neu++;
+  });
+  $("#modProgress").innerHTML=Object.entries(mods).map(([m,d])=>{
+    const a=d.appl||1;
+    return `<div class="modrow"><span class="ml">${esc(m)}</span>
+      <span class="mc">${d.ok}/${d.appl}</span>
+      <span class="bar"><i class="ok" style="width:${d.ok/a*100}%"></i><i class="bad" style="width:${d.bad/a*100}%"></i><i class="neu" style="width:${d.neu/a*100}%"></i></span></div>`;
+  }).join("");
+
+  // crit list
+  const cl=$("#critList");
+  if(v.critOpen.length){
+    cl.innerHTML=`<div class="blockers"><ul>`+v.critOpen.slice(0,12).map(c=>{
+      const s=chkOf(c.id);const tag=s.status==="Not Checked"?"unchecked":s.status.toLowerCase();
+      return `<li><span class="bid">${c.id}</span><span>${esc(c.checkpoint)} <em style="color:var(--muted)">· ${tag}</em></span></li>`;
+    }).join("")+`</ul>${v.critOpen.length>12?`<div class="footnote">+ ${v.critOpen.length-12} more critical control(s) open</div>`:""}</div>`;
+  } else {
+    cl.innerHTML=`<div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 6 9 17l-5-5"/></svg><div>No open critical controls.</div></div>`;
+  }
+  $("#navChkN").textContent = v.critOpen.length? "· "+v.critOpen.length : "";
+  const of=state.flagsReg.filter(f=>f.status!=="Closed").length;
+  $("#navFlagN").textContent = of? "· "+of : "";
+}
+
+/* ----- Proposal ----- */
+function renderProposal(){
+  const g=$("#propForm");
+  g.innerHTML=PROP_FIELDS.map(([k,l,t])=>{
+    const type=t==="num"?"number":t==="date"?"date":"text";
+    const step=t==="num"?' step="0.0001"':'';
+    return `<div class="field"><label for="p_${k}">${l}</label>
+      <input id="p_${k}" type="${type}"${step} value="${esc(state.prop[k]||"")}" data-pk="${k}"></div>`;
+  }).join("");
+  $("#propFlags").innerHTML=FLAGS.map(([k,l])=>
+    `<label class="flag"><input type="checkbox" data-fk="${k}" ${state.flags[k]?"checked":""}>${l}</label>`).join("");
+  $("#pcat").value=state.pcat||"";
+  g.querySelectorAll("input").forEach(i=>i.addEventListener("input",e=>{state.prop[e.target.dataset.pk]=e.target.value;markDirty();}));
+  $("#propFlags").querySelectorAll("input").forEach(i=>i.addEventListener("change",e=>{state.flags[e.target.dataset.fk]=e.target.checked;markDirty();renderDashboard();}));
+  $("#pcat").addEventListener("change",e=>{state.pcat=e.target.value;markDirty();renderDashboard();});
+}
+
+/* ----- Checklist ----- */
+const MODULES=[...new Set(CHECKS.map(c=>c.module))];
+let collapsed={};
+function renderChecklistFilters(){
+  const fm=$("#fMod"); if(fm.options.length<=1) MODULES.forEach(m=>fm.add(new Option(m,m)));
+}
+function statusBtnClass(cur,val){return "sbtn"+(cur===val||(cur==="Clarification Required"&&val==="Clarification")?" sel":"");}
+function renderChecklist(){
+  const q=($("#chkSearch").value||"").toLowerCase();
+  const fMod=$("#fMod").value,fSev=$("#fSev").value,fStat=$("#fStat").value;
+  const onlyApp=$("#fApp").checked, onlyCrit=$("#fCrit").checked;
+  const cont=$("#checklist");cont.innerHTML="";
+  let shown=0;
+  MODULES.forEach(m=>{
+    if(fMod&&fMod!==m)return;
+    const rows=CHECKS.filter(c=>c.module===m).filter(c=>{
+      if(fSev&&c.severity!==fSev)return false;
+      const app=isApplicable(c);
+      if(onlyApp&&!app)return false;
+      if(onlyCrit&&c.severity!=="Critical")return false;
+      const s=chkOf(c.id).status;
+      if(fStat){const norm=s==="Clarification Required"?"Clarification":s;if(norm!==fStat)return false;}
+      if(q){const hay=(c.id+" "+c.checkpoint+" "+c.evidence+" "+c.trigger+" "+c.resp).toLowerCase();if(!hay.includes(q))return false;}
+      return true;
+    });
+    if(!rows.length)return;
+    const openCrit=rows.filter(c=>isUnresolved(c)&&c.severity==="Critical").length;
+    const okc=rows.filter(c=>{const s=chkOf(c.id).status;return isApplicable(c)&&(s==="Compliant"||s==="Not Applicable");}).length;
+    const blk=document.createElement("div");
+    blk.className="modblock"+(collapsed[m]?" collapsed":"");
+    blk.innerHTML=`<div class="mh"><span class="caret">▾</span><span class="mt">${esc(m)}</span>
+      <span class="mstat">
+        ${openCrit?`<span class="mpill bad">${openCrit} crit open</span>`:``}
+        <span class="mpill ${okc===rows.length?'ok':'neu'}">${okc}/${rows.length} ok</span>
+      </span></div><div class="rows"></div>`;
+    blk.querySelector(".mh").addEventListener("click",()=>{collapsed[m]=!collapsed[m];renderChecklist();});
+    const rc=blk.querySelector(".rows");
+    rows.forEach(c=>{rc.appendChild(checkCard(c));shown++;});
+    cont.appendChild(blk);
+  });
+  if(!shown)cont.innerHTML=`<div class="empty">No controls match the current filters.</div>`;
+  $("#chkCount").textContent = CHECKS.length+" controls · "+CHECKS.filter(c=>c.severity==="Critical").length+" critical.";
+}
+function checkCard(c){
+  const s=chkOf(c.id);const app=isApplicable(c);
+  const el=document.createElement("div");
+  const unresolvedCrit=isUnresolved(c)&&c.severity==="Critical";
+  const resolvedOk=app&&(s.status==="Compliant"||(s.override&&s.order.trim()&&!NONOVERRIDABLE(c)&&(s.status==="Non-Compliant"||s.status==="Clarification")));
+  el.className="chk "+(c.severity==="Critical"?"crit ":"")+(unresolvedCrit?"unresolved-crit":resolvedOk?"resolved-ok":"");
+  if(!app) el.style.opacity=".62";
+  const statuses=["Compliant","Non-Compliant","Clarification","Not Applicable"];
+  const canOverride=(s.status==="Non-Compliant"||s.status==="Clarification");
+  el.innerHTML=`
+    <div class="chk-top">
+      <span class="chk-id">${c.id}</span>
+      <div class="chk-body">
+        <div class="chk-cp">${esc(c.checkpoint)}</div>
+        <div class="chk-meta">
+          <span class="m"><b>Trigger:</b> ${esc(c.trigger)}</span>
+          ${c.resp?`<span class="m"><b>Resp:</b> ${esc(c.resp)}</span>`:``}
+          ${c.autocheck?`<span class="m"><b>Check:</b> ${esc(c.autocheck)}</span>`:``}
+        </div>
+      </div>
+      <span class="sev ${c.severity}">${c.severity}</span>
+      ${!app?`<span class="na-tag">N/A</span>`:``}
+    </div>
+    <div class="chk-controls">
+      ${c.evidence?`<div class="evid"><b>Evidence:</b> ${esc(c.evidence)}</div>`:``}
+      <div class="statusrow">
+        ${statuses.map(v=>`<button class="${statusBtnClass(s.status,v)}" data-s="${v}">${v}</button>`).join("")}
+        ${s.status!=="Not Checked"?`<button class="sbtn" data-s="Not Checked" style="opacity:.7">Clear</button>`:``}
+      </div>
+      <textarea placeholder="Remark / deficiency note / evidence citation…" data-rk="remark">${esc(s.remark)}</textarea>
+      ${canOverride?(NONOVERRIDABLE(c)
+        ? `<div class="noovr">⛔ Statutory stop/final gate — not administratively overrideable.</div>`
+        : `<div class="ovr"><label class="ovh"><input type="checkbox" data-ov="1" ${s.override?"checked":""}>Override with speaking order</label>
+           ${s.override?`<textarea placeholder="Record the reasoned speaking order justifying the override…" data-rk="order">${esc(s.order)}</textarea>`:``}</div>`
+      ):``}
+    </div>`;
+  el.querySelectorAll(".sbtn").forEach(b=>b.addEventListener("click",()=>{
+    s.status=b.dataset.s; if(s.status!=="Non-Compliant"&&s.status!=="Clarification"){s.override=false;s.order="";}
+    markDirty();renderChecklist();renderDashboard();syncFlags();
+  }));
+  el.querySelectorAll("[data-rk]").forEach(t=>t.addEventListener("input",e=>{s[e.target.dataset.rk]=e.target.value;markDirty();}));
+  const ov=el.querySelector("[data-ov]");if(ov)ov.addEventListener("change",e=>{s.override=e.target.checked;markDirty();renderChecklist();renderDashboard();});
+  return el;
+}
+
+/* ----- Area reconciliation ----- */
+const AREA_ROWS=["PARIVESH Portal","Application Form","Component-wise Breakup","Village-wise Breakup",
+  "Compartment-wise Breakup","Land Schedule","DFO Recommendation","Site Inspection Report",
+  "CF Recommendation","Nodal Officer Recommendation","KML/KMZ Calculated Area","Earlier Approval"];
+function renderArea(){
+  $("#portalArea").value=state.area.portal||"";
+  $("#areaTol").value=state.area.tol||"0.0100";
+  const portal=parseFloat(state.area.portal),tol=parseFloat(state.area.tol)||0;
+  const t=$("#areaTbl");
+  t.innerHTML=`<thead><tr><th>Source</th><th style="width:150px">Reported area (ha)</th><th style="width:130px">Δ vs portal</th><th style="width:120px">Status</th></tr></thead><tbody>${
+    AREA_ROWS.map(r=>{
+      const val=state.area.rows[r]||"";
+      const n=parseFloat(val);
+      let diff="—",cls="",st="",stc="neu";
+      if(!isNaN(n)&&!isNaN(portal)){
+        const d=n-portal; diff=(d>=0?"+":"")+d.toFixed(4);
+        if(Math.abs(d)<=tol){cls="ok";st="Match";stc="ok";}else{cls="bad";st="Mismatch";stc="bad";}
+      } else if(!isNaN(n)&&isNaN(portal)){diff="—";st="Set portal";}
+      return `<tr><td>${r}</td>
+        <td class="num"><input type="number" step="0.0001" value="${esc(val)}" data-ar="${esc(r)}"></td>
+        <td><span class="diff ${cls}">${diff}</span></td>
+        <td>${st?`<span class="tstatus ${stc}">${st}</span>`:""}</td></tr>`;
+    }).join("")}</tbody>`;
+  t.querySelectorAll("[data-ar]").forEach(i=>i.addEventListener("input",e=>{state.area.rows[e.target.dataset.ar]=e.target.value;markDirty();renderArea();}));
+}
+
+/* ----- CA registry ----- */
+const CA_COLS=[["parcel","Parcel ID"],["district","District"],["village","Village"],
+  ["status","Ownership/legal"],["reqArea","Req (ha)","n"],["propArea","Proposed (ha)","n"],
+  ["kmlArea","KML (ha)","n"],["suit","Suitability"],["enc","Encumbrance"],["overlap","Overlap check"]];
+function renderCA(){
+  const t=$("#caTbl");
+  t.innerHTML=`<thead><tr>${CA_COLS.map(c=>`<th>${c[1]}</th>`).join("")}<th>Match</th><th></th></tr></thead><tbody>${
+    state.ca.map((row,i)=>{
+      const match=(()=>{const a=parseFloat(row.propArea),b=parseFloat(row.kmlArea);if(isNaN(a)||isNaN(b))return "";return Math.abs(a-b)<=0.01?`<span class="tstatus ok">Match</span>`:`<span class="tstatus bad">Diff</span>`;})();
+      return `<tr>${CA_COLS.map(c=>{
+        const isN=c[2]==="n";
+        return `<td class="${isN?'num':''}"><input ${isN?'type="number" step="0.0001"':''} value="${esc(row[c[0]]||"")}" data-ci="${i}" data-ck="${c[0]}"></td>`;
+      }).join("")}<td>${match}</td><td><button class="btn danger" data-del="${i}" style="padding:5px 9px">✕</button></td></tr>`;
+    }).join("")||`<tr><td colspan="${CA_COLS.length+2}" style="text-align:center;color:var(--muted);padding:20px">No CA parcels. Add one below.</td></tr>`}</tbody>`;
+  t.querySelectorAll("[data-ci]").forEach(i=>i.addEventListener("input",e=>{state.ca[+e.target.dataset.ci][e.target.dataset.ck]=e.target.value;markDirty();if(e.target.dataset.ck==="propArea"||e.target.dataset.ck==="kmlArea")renderCA();}));
+  t.querySelectorAll("[data-del]").forEach(b=>b.addEventListener("click",()=>{state.ca.splice(+b.dataset.del,1);markDirty();renderCA();}));
+}
+
+/* ----- GIS ----- */
+const GIS_ROWS=["Proposal polygon geometry valid","GIS area matches proposed forest area",
+  "Administrative jurisdiction match","Forest compartment spatial match",
+  "Protected Area intersection/proximity","ESZ intersection/proximity",
+  "Tiger Reserve / CTH intersection/proximity","Wildlife corridor sensitivity",
+  "CA polygon geometry valid","CA polygon overlap with State CA Registry"];
+function renderGIS(){
+  const t=$("#gisTbl");
+  t.innerHTML=`<thead><tr><th>GIS check</th><th style="width:150px">Result</th><th style="width:150px">Measured value</th><th>Remarks</th></tr></thead><tbody>${
+    GIS_ROWS.map(r=>{
+      const g=state.gis[r]||{res:"Not Checked",val:"",rem:""};
+      return `<tr><td>${r}</td>
+        <td><select data-gr="${esc(r)}" data-gk="res">
+          ${["Not Checked","Pass","Fail","N/A"].map(o=>`<option ${g.res===o?"selected":""}>${o}</option>`).join("")}</select></td>
+        <td><input value="${esc(g.val)}" data-gr="${esc(r)}" data-gk="val"></td>
+        <td><input value="${esc(g.rem)}" data-gr="${esc(r)}" data-gk="rem"></td></tr>`;
+    }).join("")}</tbody>`;
+  t.querySelectorAll("[data-gr]").forEach(i=>i.addEventListener("input",e=>{const r=e.target.dataset.gr;state.gis[r]=state.gis[r]||{res:"Not Checked",val:"",rem:""};state.gis[r][e.target.dataset.gk]=e.target.value;markDirty();}));
+}
+
+/* ----- Doc reconciliation ----- */
+const DOC_ROWS=["Proposal Title","User Agency","District","Village","Forest Division","Compartment",
+  "Forest Area (ha)","Tree Count","Forest Density","Eco-Class","CA Required (ha)","CA Proposed (ha)",
+  "CA KML Area (ha)","Violation Status","Wildlife Status"];
+const DOC_COLS=["Portal","Application","DFO/SIR","CF","Nodal","GIS/Other"];
+function renderDocs(){
+  const t=$("#docTbl");
+  t.innerHTML=`<thead><tr><th>Data field</th>${DOC_COLS.map(c=>`<th>${c}</th>`).join("")}<th>Result</th></tr></thead><tbody>${
+    DOC_ROWS.map(r=>{
+      const row=state.docs[r]||{};
+      const vals=DOC_COLS.map(c=>(row[c]||"").trim()).filter(Boolean);
+      let res="";
+      if(vals.length>=2){const uniq=[...new Set(vals.map(v=>v.toLowerCase()))];res=uniq.length===1?`<span class="tstatus ok">Match</span>`:`<span class="tstatus bad">Mismatch</span>`;}
+      return `<tr><td style="font-weight:600">${r}</td>${DOC_COLS.map(c=>
+        `<td><input value="${esc(row[c]||"")}" data-dr="${esc(r)}" data-dc="${esc(c)}"></td>`).join("")}<td>${res}</td></tr>`;
+    }).join("")}</tbody>`;
+  t.querySelectorAll("[data-dr]").forEach(i=>i.addEventListener("input",e=>{const r=e.target.dataset.dr;state.docs[r]=state.docs[r]||{};state.docs[r][e.target.dataset.dc]=e.target.value;markDirty();if(e.target.value===""||true)clearTimeout(window._dt),window._dt=setTimeout(renderDocs,600);}));
+}
+
+/* ----- Red flags: auto-sync from unresolved criticals ----- */
+function syncFlags(){
+  // add auto flags for unresolved critical checks not already present & not closed
+  CHECKS.forEach(c=>{
+    if(isUnresolved(c)&&c.severity==="Critical"){
+      const ex=state.flagsReg.find(f=>f.checkId===c.id);
+      if(!ex){
+        state.flagsReg.push({id:"RF-"+String(state.flagsReg.length+1).padStart(3,"0"),
+          checkId:c.id,module:c.module,def:c.checkpoint,severity:"Critical",
+          raised:new Date().toISOString().slice(0,10),status:"Open",action:"",closed:"",closeRem:"",auto:true});
+      } else if(ex.auto && ex.status!=="Closed"){ ex.def=c.checkpoint; }
+    }
+  });
+  // auto-close auto flags whose check is now resolved
+  state.flagsReg.forEach(f=>{if(f.auto&&f.checkId){const c=CHECKS.find(x=>x.id===f.checkId);if(c&&!isUnresolved(c)&&f.status!=="Closed"){f.status="Closed";f.closed=new Date().toISOString().slice(0,10);if(!f.closeRem)f.closeRem="Underlying control resolved.";}}});
+}
+function renderFlags(){
+  syncFlags();
+  const c=$("#flagList");
+  if(!state.flagsReg.length){c.innerHTML=`<div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 21V4h13l-2 4 2 4H4"/></svg><div>No red flags raised. Unresolved critical controls will appear here automatically.</div></div>`;return;}
+  const order={Open:0,"In Progress":1,Closed:2};
+  const sorted=[...state.flagsReg].sort((a,b)=>(order[a.status]-order[b.status]));
+  c.innerHTML=sorted.map(f=>{
+    const idx=state.flagsReg.indexOf(f);
+    return `<div class="rf ${f.status==="Closed"?"closed":""} ${f.severity==="Major"?"major":""}">
+      <div class="rf-top">
+        <span class="rf-id">${f.id}</span>
+        <span class="tstatus ${f.severity==="Critical"?"bad":"neu"}">${f.severity}</span>
+        ${f.checkId?`<span class="chk-id">${f.checkId}</span>`:``}
+        ${f.auto?`<span class="rf-id" style="color:var(--brass-d)">auto</span>`:``}
+        <select data-ff="${idx}" data-fk="status" style="margin-left:auto;padding:5px 8px;border:1px solid var(--line);border-radius:6px">
+          ${["Open","In Progress","Closed"].map(o=>`<option ${f.status===o?"selected":""}>${o}</option>`).join("")}</select>
+      </div>
+      <div class="rf-def" ${!f.auto?'contenteditable':''} data-fedit="${idx}" data-fk="def">${esc(f.def)}</div>
+      <div class="rf-meta"><span>Module: ${esc(f.module||"—")}</span><span>Raised: ${f.raised}</span>${f.closed?`<span>Closed: ${f.closed}</span>`:``}</div>
+      <textarea placeholder="Action required / resolution evidence…" data-ff="${idx}" data-fk="action" style="width:100%;margin-top:8px;padding:8px 10px;border:1px solid var(--line);border-radius:7px;min-height:34px;font-size:13px">${esc(f.action||"")}</textarea>
+      ${!f.auto?`<button class="btn danger" data-fdel="${idx}" style="margin-top:8px;padding:5px 10px">Delete flag</button>`:``}
+    </div>`;
+  }).join("");
+  c.querySelectorAll("[data-ff]").forEach(el=>el.addEventListener("input",e=>{state.flagsReg[+e.target.dataset.ff][e.target.dataset.fk]=e.target.value;if(e.target.dataset.fk==="status"){const f=state.flagsReg[+e.target.dataset.ff];if(e.target.value==="Closed"&&!f.closed)f.closed=new Date().toISOString().slice(0,10);if(e.target.value!=="Closed")f.closed="";}markDirty();renderDashboard();if(e.target.dataset.fk==="status")renderFlags();}));
+  c.querySelectorAll("[data-fedit]").forEach(el=>el.addEventListener("blur",e=>{state.flagsReg[+e.target.dataset.fedit].def=e.target.textContent;markDirty();}));
+  c.querySelectorAll("[data-fdel]").forEach(b=>b.addEventListener("click",()=>{state.flagsReg.splice(+b.dataset.fdel,1);markDirty();renderFlags();renderDashboard();}));
+}
+
+/* ----- Rules library ----- */
+const RULE_COLS=[["id","Rule ID"],["subject","Subject/module"],["act","Act/Rule/Guideline"],
+  ["clause","Provision/clause"],["eff","Effective from"],["super","Superseded by"],["src","Source ref"],["verified","Last verified"]];
+function renderRules(){
+  const t=$("#rulesTbl");
+  t.innerHTML=`<thead><tr><th>Source</th>${RULE_COLS.map(c=>`<th>${c[1]}</th>`).join("")}<th></th></tr></thead><tbody>${
+    state.rules.map((r,i)=>`<tr><td><span class="tstatus ${r._src==='published'?'ok':'neu'}" style="font-size:9.5px">${r._src==='published'?'Published':'Local'}</span></td>${RULE_COLS.map(c=>{
+      if(c[0]==="src"){const u=(r.src||"").trim();const isUrl=/^https?:\/\//i.test(u);
+        return `<td><div style="display:flex;gap:5px;align-items:center"><input value="${esc(u)}" data-ri="${i}" data-rk="src" placeholder="official PDF / gazette URL">${isUrl?`<a href="${esc(u)}" target="_blank" rel="noopener" title="Open source" style="text-decoration:none;flex:0 0 auto">↗</a>`:``}</div></td>`;}
+      return `<td><input value="${esc(r[c[0]]||"")}" data-ri="${i}" data-rk="${c[0]}"></td>`;
+    }).join("")}<td><button class="btn danger" data-rdel="${i}" style="padding:5px 9px">✕</button></td></tr>`).join("")
+    ||`<tr><td colspan="${RULE_COLS.length+2}" style="text-align:center;color:var(--muted);padding:20px">No rules loaded. The published rules.json will load automatically when online, or import a rules file.</td></tr>`}</tbody>`;
+  t.querySelectorAll("[data-ri]").forEach(i=>i.addEventListener("input",e=>{state.rules[+e.target.dataset.ri][e.target.dataset.rk]=e.target.value;markDirty();}));
+  t.querySelectorAll("[data-rdel]").forEach(b=>b.addEventListener("click",()=>{state.rules.splice(+b.dataset.rdel,1);markDirty();renderRules();}));
+}
+function renderRulesVer(){
+  const el=$("#rulesVer");if(!el)return;
+  if(state.rulesLibVersion) el.textContent="v"+state.rulesLibVersion+(state.rulesUpdated?" · updated "+state.rulesUpdated:"")+" · "+state.rules.length+" rules";
+  else el.textContent="not loaded — will fetch rules.json when online";
+}
+function mergeRules(pub){
+  const byId={}; (state.rules||[]).forEach(r=>{byId[r.id]=r;});
+  (pub.rules||[]).forEach(r=>{ byId[r.id]=Object.assign({}, byId[r.id]||{}, r, {_src:"published"}); });
+  state.rules=Object.values(byId);
+}
+async function loadPublishedRules(manual){
+  try{
+    const res=await fetch("./rules.json",{cache:"no-cache"});
+    if(!res.ok) throw new Error("http "+res.status);
+    const pub=await res.json();
+    const same = pub.libraryVersion===state.rulesLibVersion && (state.rules&&state.rules.length);
+    if(manual && same){ toast("Rules library already current (v"+pub.libraryVersion+")"); renderRulesVer(); return; }
+    const changed = !same;
+    mergeRules(pub);
+    state.rulesLibVersion=pub.libraryVersion; state.rulesUpdated=pub.updated;
+    persist(); renderRulesVer();
+    if($("#v-rules").classList.contains("active")) renderRules();
+    if(changed) toast("Rules library updated to v"+pub.libraryVersion+" ("+pub.updated+")");
+  }catch(e){ if(manual) toast("Could not load rules.json — offline or not published yet"); renderRulesVer(); }
+}
+function download(text,name,type){
+  const blob=new Blob([text],{type:type||"application/json"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;
+  document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1500);
+}
+
+/* ----- Reports ----- */
+function repHeader(sub){
+  return `<div class="rep-head"><img src="./header-emblem.png" alt="" style="width:56px;height:56px;border-radius:50%;margin:0 auto 8px;display:block"><div class="go">Government of Uttarakhand · Forest, Environment &amp; Climate Change</div>
+    <h3>${sub}</h3><div class="rs">Van Anumodan — PARIVESH Forest Diversion Scrutiny · Generated ${new Date().toLocaleString()}</div></div>`;
+}
+function propKV(){
+  const p=state.prop;
+  const kv=[["PARIVESH proposal no.",p.proposalNo],["Proposal name",p.name],["User agency",p.ua],
+    ["District / Division",[p.district,p.division].filter(Boolean).join(" / ")],
+    ["Project category",state.pcat],["Forest area proposed (ha)",p.forestArea],
+    ["KML calculated area (ha)",p.kmlArea],["Scrutiny officer",p.officer],["Date of scrutiny",p.date]];
+  return `<div class="rep-kv">${kv.map(([k,v])=>`<span class="k">${k}</span><span class="v">${esc(v||"—")}</span>`).join("")}</div>`;
+}
+function genExec(){
+  const v=computeVerdict();
+  const vcolor=v.level==="g"?"var(--ok-bg);color:#0b4e2d":v.level==="a"?"var(--warn-bg);color:#7a4e06":"var(--bad-bg);color:#7d160f";
+  const crit=v.critOpen,maj=v.majorOpen;
+  const docsAnalysed=[...new Set(CHECKS.filter(c=>isApplicable(c)).map(c=>c.evidence).filter(Boolean))];
+  const out=`<div class="report" id="repDoc">
+    ${repHeader("Executive Scrutiny Report")}
+    <div class="rep-verdict" style="background:${vcolor}">System verdict: ${esc(v.label)}</div>
+    <div class="rep-sec"><h4>Proposal identification</h4>${propKV()}</div>
+    <div class="rep-sec"><h4>Scrutiny summary</h4><div class="rep-kv">
+      <span class="k">Applicable controls</span><span class="v">${v.appl}</span>
+      <span class="k">Resolved</span><span class="v">${v.compliant} (${v.pct}%)</span>
+      <span class="k">Open critical controls</span><span class="v">${crit.length}</span>
+      <span class="k">Open major controls</span><span class="v">${maj.length}</span>
+      <span class="k">Applicable controls not checked</span><span class="v">${v.notChecked}</span>
+      <span class="k">Open red flags</span><span class="v">${state.flagsReg.filter(f=>f.status!=="Closed").length}</span>
+    </div><p class="footnote">The management score is indicative only and does not determine readiness (§13). A proposal cannot be Ready for Forwarding while any applicable critical control or statutory stop condition is unresolved.</p></div>
+    <div class="rep-sec"><h4>Critical deficiencies</h4>${crit.length?`<ul class="rep-list">${crit.map(c=>{const s=chkOf(c.id);return `<li><span class="rid">${c.id}</span><span>${esc(c.checkpoint)} — <em>${esc(s.status)}</em>${s.remark?`. ${esc(s.remark)}`:""}</span></li>`;}).join("")}</ul>`:`<p style="color:var(--ok);font-weight:600">None. No applicable critical control is unresolved.</p>`}</div>
+    <div class="rep-sec"><h4>Major observations</h4>${maj.length?`<ul class="rep-list">${maj.map(c=>`<li><span class="rid" style="color:var(--warn)">${c.id}</span><span>${esc(c.checkpoint)}</span></li>`).join("")}</ul>`:`<p style="color:var(--muted)">None outstanding.</p>`}</div>
+    <div class="rep-sec"><h4>Area reconciliation</h4>${areaReportRows()}</div>
+    <div class="rep-sec"><h4>Overrides recorded (speaking orders)</h4>${overrideRows()}</div>
+    <div class="rep-sec"><h4>Conclusion &amp; recommendation</h4>
+      <p>${v.level==="g"?"Subject to competent-authority certification, the proposal package meets the configured scrutiny controls and may be forwarded.":v.level==="a"?"The proposal requires officer review to close outstanding major/unchecked items before forwarding.":"The proposal is NOT ready for forwarding. The critical deficiencies and stop conditions listed above must be resolved and the package re-scrutinised."}</p></div>
+    <div class="rep-sec"><h4>Scrutiny officer disposition</h4><div class="rep-kv"><span class="k">Scrutiny officer</span><span class="v">${esc(state.prop.officer||"__________________")}</span><span class="k">Date</span><span class="v">${esc(state.prop.date||"____________")}</span><span class="k">Senior review / competent authority</span><span class="v">__________________</span></div></div>
+  </div>`;
+  $("#reportOut").innerHTML=out;
+  $("#printArea").innerHTML=out;
+}
+function areaReportRows(){
+  const portal=parseFloat(state.area.portal),tol=parseFloat(state.area.tol)||0;
+  const rows=AREA_ROWS.map(r=>{const n=parseFloat(state.area.rows[r]);if(isNaN(n))return null;
+    let st="—";if(!isNaN(portal))st=Math.abs(n-portal)<=tol?"Match":"MISMATCH";
+    return `<li><span class="rid" style="color:${st==='MISMATCH'?'var(--bad)':'var(--ok)'}">${st}</span><span>${r}: ${n.toFixed(4)} ha</span></li>`;
+  }).filter(Boolean);
+  return rows.length?`<ul class="rep-list">${rows.join("")}</ul>`:`<p style="color:var(--muted)">No area values entered.</p>`;
+}
+function overrideRows(){
+  const ov=CHECKS.filter(c=>{const s=chkOf(c.id);return s.override&&s.order.trim();});
+  return ov.length?`<ul class="rep-list">${ov.map(c=>{const s=chkOf(c.id);return `<li><span class="rid" style="color:var(--brass-d)">${c.id}</span><span>${esc(c.checkpoint)} — <em>${esc(s.order)}</em></span></li>`;}).join("")}</ul>`:`<p style="color:var(--muted)">No overrides recorded.</p>`;
+}
+function genMemo(){
+  const v=computeVerdict();
+  const items=[...v.critOpen,...v.majorOpen];
+  const out=`<div class="report" id="repDoc">
+    ${repHeader("Deficiency Memo")}
+    <div class="rep-sec"><h4>Proposal</h4>${propKV()}</div>
+    <div class="rep-sec"><h4>Deficiencies requiring correction (${items.length})</h4>
+    ${items.length?`<ul class="rep-list">${items.map((c,i)=>{const s=chkOf(c.id);return `<li><span class="rid" style="color:${c.severity==='Critical'?'var(--bad)':'var(--warn)'}">${i+1}.</span><span><b>[${c.id} · ${c.severity}]</b> ${esc(c.checkpoint)}. <em>Required:</em> ${esc(c.evidence||"provide evidence / correct as per applicable rule")}.${s.remark?` <em>Note:</em> ${esc(s.remark)}`:""}</span></li>`;}).join("")}</ul>`:`<p style="color:var(--ok);font-weight:600">No outstanding deficiencies.</p>`}
+    </div>
+    <p class="footnote">Please rectify the numbered deficiencies and re-submit the proposal for scrutiny. This memo is generated from the Van Anumodan Master Compliance Matrix.</p>
+  </div>`;
+  $("#reportOut").innerHTML=out;$("#printArea").innerHTML=out;
+}
+
+/* ---------------- Navigation ---------------- */
+function show(v){
+  $$(".view").forEach(s=>s.classList.remove("active"));
+  $("#v-"+v).classList.add("active");
+  $$("#nav button").forEach(b=>b.classList.toggle("active",b.dataset.v===v));
+  window.scrollTo(0,0);
+  if(v==="dashboard")renderDashboard();
+  if(v==="proposal")renderProposal();
+  if(v==="intake")renderIntake();
+  if(v==="checklist"){renderChecklistFilters();renderChecklist();}
+  if(v==="area")renderArea();
+  if(v==="ca")renderCA();
+  if(v==="gis"){renderGisPanel();renderGIS();}
+  if(v==="docs")renderDocs();
+  if(v==="flags")renderFlags();
+  if(v==="rules"){renderRules();renderRulesVer();}
+}
+$("#nav").addEventListener("click",e=>{const b=e.target.closest("button");if(b)show(b.dataset.v);});
+
+/* filters */
+["#chkSearch","#fMod","#fSev","#fStat","#fApp","#fCrit"].forEach(s=>$(s).addEventListener("input",renderChecklist));
+
+/* proposal buttons */
+$("#saveProp").addEventListener("click",()=>{persist();toast("Proposal saved");renderDashboard();});
+$("#gotoChk").addEventListener("click",()=>show("checklist"));
+
+/* area inputs */
+$("#portalArea").addEventListener("input",e=>{state.area.portal=e.target.value;markDirty();renderArea();});
+$("#areaTol").addEventListener("input",e=>{state.area.tol=e.target.value;markDirty();renderArea();});
+
+/* add buttons */
+$("#addCA").addEventListener("click",()=>{state.ca.push({parcel:"CA-"+String(state.ca.length+1).padStart(2,"0")});markDirty();renderCA();});
+$("#addRule").addEventListener("click",()=>{state.rules.push({id:"R-"+String(state.rules.length+1).padStart(3,"0")});markDirty();renderRules();});
+$("#addFlag").addEventListener("click",()=>{state.flagsReg.push({id:"RF-"+String(state.flagsReg.length+1).padStart(3,"0"),def:"",severity:"Major",raised:new Date().toISOString().slice(0,10),status:"Open",auto:false});markDirty();renderFlags();});
+
+/* reports */
+$("#genExec").addEventListener("click",genExec);
+$("#genMemo").addEventListener("click",genMemo);
+$("#printRep").addEventListener("click",()=>{if(!$("#printArea").innerHTML)genExec();window.print();});
+$("#exportJson").addEventListener("click",()=>{
+  const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);
+  a.download="van-anumodan-"+(state.prop.proposalNo||"case").replace(/[^\w-]/g,"_")+".json";a.click();
+  toast("Case exported");
+});
+$("#importJson").addEventListener("click",()=>$("#fileIn").click());
+$("#fileIn").addEventListener("change",e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();
+  r.onload=()=>{try{state=JSON.parse(r.result);migrateSafe();persist();toast("Case imported");show("dashboard");}catch(err){toast("Invalid file");}};r.readAsText(f);});
+function migrateSafe(){if(!state.checks)state.checks=blankCheckState();CHECKS.forEach(c=>{if(!state.checks[c.id])state.checks[c.id]={status:"Not Checked",remark:"",override:false,order:""};});["prop","flags"].forEach(k=>{if(!state[k])state[k]={};});if(!state.area)state.area={portal:"",tol:"0.0100",rows:{}};if(!state.ca)state.ca=[];if(!state.gis)state.gis={};if(!state.docs)state.docs={};if(!state.flagsReg)state.flagsReg=[];if(!state.rules)state.rules=[];}
+$("#resetAll").addEventListener("click",()=>{if(confirm("Reset the entire case? This clears all scrutiny data on this device.")){state=newState();persist();toast("Case reset");show("dashboard");}});
+
+/* rules library buttons */
+$("#checkRules").addEventListener("click",()=>loadPublishedRules(true));
+$("#exportRules").addEventListener("click",()=>{
+  const out={libraryVersion: state.rulesLibVersion || ("local-"+new Date().toISOString().slice(0,10)),
+    updated:new Date().toISOString().slice(0,10),
+    issuingAuthority:"Exported from Van Anumodan — approve before production gating",
+    rules:(state.rules||[]).map(r=>{const o=Object.assign({},r);delete o._src;return o;})};
+  download(JSON.stringify(out,null,2),"rules.json");
+  toast("rules.json exported — commit it to publish the update");
+});
+$("#importRules").addEventListener("click",()=>$("#rulesFileIn").click());
+$("#rulesFileIn").addEventListener("change",e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();
+  r.onload=()=>{try{const pub=JSON.parse(r.result);if(!pub.rules||!Array.isArray(pub.rules))throw 0;
+    mergeRules(pub);state.rulesLibVersion=pub.libraryVersion||state.rulesLibVersion;state.rulesUpdated=pub.updated||state.rulesUpdated;
+    persist();renderRules();renderRulesVer();toast("Rules imported"+(pub.libraryVersion?" (v"+pub.libraryVersion+")":""));
+  }catch(err){toast("Invalid rules file");}};r.readAsText(f);e.target.value="";});
+
+/* ---- Assisted rule intake (client-side extraction) ---- */
+let _pdfjs=null, intakeMode="pdf";
+function ensurePdfjs(){
+  if(_pdfjs) return _pdfjs;
+  _pdfjs=new Promise((res,rej)=>{
+    const sc=document.createElement("script");sc.src="./pdf.min.js";
+    sc.onload=()=>{try{window.pdfjsLib.GlobalWorkerOptions.workerSrc="./pdf.worker.min.js";res(window.pdfjsLib);}catch(e){rej(e);}};
+    sc.onerror=()=>rej(new Error("pdf.js not available"));
+    document.head.appendChild(sc);
+  });
+  return _pdfjs;
+}
+async function extractPdfText(fileOrBlob){
+  const pdfjs=await ensurePdfjs();
+  const buf=await fileOrBlob.arrayBuffer();
+  const doc=await pdfjs.getDocument({data:buf}).promise;
+  let text="";const max=Math.min(doc.numPages,15);
+  for(let p=1;p<=max;p++){const pg=await doc.getPage(p);const c=await pg.getTextContent();text+=c.items.map(i=>i.str).join(" ")+"\n";}
+  return {text,pages:doc.numPages};
+}
+const MONTHS={january:1,february:2,march:3,april:4,may:5,june:6,july:7,august:8,september:9,october:10,november:11,december:12};
+function normDate(s){const m=(s||"").match(/(\d{1,2})(?:st|nd|rd|th)?\s+(?:day of\s+)?([A-Za-z]+),?\s*(\d{4})/i);
+  if(m){const mo=MONTHS[m[2].toLowerCase()];if(mo)return m[3]+"-"+String(mo).padStart(2,"0")+"-"+String(+m[1]).padStart(2,"0");}return (s||"").trim();}
+function guessModule(t){const s=t.toLowerCase();
+  const map=[["compensatory afforestation","I Compensatory Afforestation"],["accredited compensatory","I Compensatory Afforestation"],
+    ["net present value","J NPV and Financial Liabilities"],[" npv","J NPV and Financial Liabilities"],["compensatory levies","J NPV and Financial Liabilities"],
+    ["wild life","L Wildlife and Ecology"],["wildlife","L Wildlife and Ecology"],["tiger","L Wildlife and Ecology"],["sanctuary","L Wildlife and Ecology"],
+    ["forest rights","K FRA and Rights"],["gram sabha","K FRA and Rights"],["scheduled tribes","K FRA and Rights"],
+    ["section 1a","B Legal Status"],["de-reservation","B Legal Status"],["dereservation","B Legal Status"],["reserved forest","B Legal Status"],
+    ["site inspection","E DFO and Site Inspection"],["kml","D GIS and Maps"],["diversion of forest","A Proposal Identification"]];
+  for(const [k,v] of map) if(s.includes(k)) return v; return "";}
+function parseRuleText(text){
+  const t=(text||"").replace(/\s+/g," ").trim();
+  const out={act:"",gsr:"",issue:"",eff:"",clause:"",subject:"",notes:""};
+  let m=t.match(/These (?:rules|regulations) may be called the ([^.]+?(?:Amendment Rules|Rules|Regulations),?\s*\d{4})/i)
+      || t.match(/This Act may be called the ([^.]+?Act,?\s*\d{4})/i)
+      || t.match(/([A-Z][A-Za-z()\/,. ]+?(?:Adhiniyam|Amendment Rules|Rules|Act|Regulations),?\s*\d{4})/);
+  if(m) out.act=m[1].replace(/\s+/g," ").trim();
+  let g=t.match(/\bG\.?\s?S\.?\s?R\.?\s*\.?\s*(\d+\s*\(?\s*E?\s*\)?)/i);
+  if(g) out.gsr="G.S.R. "+g[1].replace(/\s+/g,"");
+  else { g=t.match(/\bS\.?\s?O\.?\s*\.?\s*(\d+\s*\(?\s*E?\s*\)?)/i); if(g) out.gsr="S.O. "+g[1].replace(/\s+/g,""); }
+  let e=t.match(/come into force on(?:\s+the)?\s+([0-9]{1,2}(?:st|nd|rd|th)?\s+(?:day of\s+)?[A-Za-z]+,?\s*\d{4})/i);
+  if(e) out.eff=normDate(e[1]);
+  let d=t.match(/dated(?:\s+the)?\s+([0-9]{1,2}(?:st|nd|rd|th)?\s+[A-Za-z]+,?\s*\d{4})/i)
+      || t.match(/\b(\d{1,2}(?:st|nd|rd|th)?\s+(?:January|February|March|April|May|June|July|August|September|October|November|December),?\s*\d{4})\b/i);
+  if(d) out.issue=normDate(d[1]);
+  const secs=[...t.matchAll(/\b(?:section|rule)\s+\d+[A-Z]?(?:\(\d+\))?/gi)].map(x=>x[0].replace(/\s+/g," "));
+  if(secs.length) out.clause=[...new Set(secs.map(s=>s.toLowerCase()))].slice(0,6).map(s=>s.replace(/^\w/,c=>c.toUpperCase())).join(", ");
+  out.subject=guessModule(t);
+  out.notes=t.slice(0,240)+(t.length>240?"…":"");
+  return out;
+}
+function iStatus(m){const el=$("#intakeStatus");if(el)el.textContent=m||"";}
+function fillModuleSelect(sel){ if(!sel)return; if(sel.options.length)return;
+  sel.add(new Option("— select —","")); MODULES.forEach(m=>sel.add(new Option(m,m))); }
+function fillIntakeForm(p,src){
+  fillModuleSelect($("#if_subject"));
+  $("#if_act").value=p.act||""; $("#if_subject").value=p.subject||""; $("#if_clause").value=p.clause||"";
+  $("#if_gsr").value=p.gsr||""; $("#if_issue").value=p.issue||""; $("#if_eff").value=p.eff||"";
+  $("#if_src").value=src||""; $("#if_notes").value=p.notes||"";
+}
+function nextRuleId(){let mx=0;(state.rules||[]).forEach(r=>{const m=/^R-(\d+)$/.exec(r.id||"");if(m)mx=Math.max(mx,+m[1]);});return "R-"+String(mx+1).padStart(3,"0");}
+async function intakeExtract(){
+  let text="",src="";
+  if(intakeMode==="pdf"){
+    const f=$("#intakePdf").files[0]; if(!f){iStatus("Choose a PDF first.");return;}
+    iStatus("Reading PDF on-device…");
+    try{const r=await extractPdfText(f); text=r.text;
+      if(!text.trim()){iStatus("No text layer found (likely a scan). Use Paste text, or send the file to Claude."); return;}
+      iStatus("Read "+r.pages+" page(s). Review the fields below.");
+    }catch(err){iStatus("Could not read PDF: "+err.message);return;}
+  } else if(intakeMode==="text"){
+    text=$("#intakeText").value; if(!text.trim()){iStatus("Paste some text first.");return;}
+    iStatus("Parsed pasted text. Review the fields below.");
+  } else {
+    src=$("#intakeUrl").value.trim(); if(!src){iStatus("Enter a URL first.");return;}
+    iStatus("Fetching… (may be blocked by CORS)");
+    try{const resp=await fetch(src); const blob=await resp.blob();
+      if(/pdf/i.test(blob.type)||/\.pdf($|\?)/i.test(src)){const r=await extractPdfText(blob);text=r.text;}
+      else {text=await blob.text();}
+      iStatus(text.trim()?"Read from URL. Review below.":"Fetched, but no readable text — paste the text instead.");
+    }catch(err){iStatus("Couldn’t read the URL (CORS/offline). Link saved — paste the text or upload the file to auto-fill.");}
+  }
+  const parsed=text?parseRuleText(text):{act:"",subject:"",clause:"",gsr:"",issue:"",eff:"",notes:""};
+  fillIntakeForm(parsed,src);
+  $("#intakeForm").classList.remove("hidden");
+}
+function intakeAdd(){
+  const gsr=$("#if_gsr").value.trim();
+  const rule={id:nextRuleId(), subject:$("#if_subject").value, act:$("#if_act").value.trim(),
+    clause:$("#if_clause").value.trim(), issue:$("#if_issue").value.trim(), eff:$("#if_eff").value.trim(),
+    super:"", src:$("#if_src").value.trim(),
+    notes:(gsr?("["+gsr+"] "):"")+$("#if_notes").value.trim(),
+    verified:new Date().toISOString().slice(0,10), _src:"local"};
+  if(!rule.act){iStatus("Add at least the instrument name before saving.");return;}
+  state.rules.push(rule); markDirty(); persist(); renderRules(); renderRulesVer();
+  toast("Rule "+rule.id+" added (Local). Export rules.json to publish it.");
+  $("#intakeForm").classList.add("hidden"); iStatus("Added "+rule.id+".");
+  ["intakeText","intakeUrl"].forEach(id=>{const el=$("#"+id);if(el)el.value="";});
+  const fp=$("#intakePdf"); if(fp) fp.value="";
+}
+(function wireIntake(){
+  const tgl=$("#intakeToggle"); if(!tgl) return;
+  tgl.addEventListener("click",()=>{const b=$("#intakeBody");const h=b.classList.toggle("hidden");tgl.textContent=h?"Show":"Hide";});
+  document.querySelectorAll("#intakeCard [data-im]").forEach(btn=>btn.addEventListener("click",()=>{
+    intakeMode=btn.dataset.im;
+    document.querySelectorAll("#intakeCard [data-im]").forEach(b=>b.classList.toggle("sel",b===btn));
+    $("#imPdf").classList.toggle("hidden",intakeMode!=="pdf");
+    $("#imText").classList.toggle("hidden",intakeMode!=="text");
+    $("#imUrl").classList.toggle("hidden",intakeMode!=="url");
+    iStatus("");
+  }));
+  $("#intakeExtract").addEventListener("click",intakeExtract);
+  $("#intakeAdd").addEventListener("click",intakeAdd);
+  $("#intakeClear").addEventListener("click",()=>{$("#intakeForm").classList.add("hidden");iStatus("");});
+})();
+
+/* ---- Document Intake: multi-format extraction engine ---- */
+let _fflate=null,_xlsx=null;
+function loadScript(src,glob){return new Promise((res,rej)=>{ if(window[glob])return res(window[glob]);
+  const s=document.createElement("script");s.src=src;s.onload=()=>window[glob]?res(window[glob]):rej(new Error(glob+" missing"));
+  s.onerror=()=>rej(new Error("failed: "+src));document.head.appendChild(s);});}
+async function ensureFflate(){if(!_fflate)_fflate=await loadScript("./fflate.min.js","fflate");return _fflate;}
+async function ensureXlsx(){if(!_xlsx)_xlsx=await loadScript("./xlsx.full.min.js","XLSX");return _xlsx;}
+const _toRad=d=>d*Math.PI/180;
+function ringAreaHa(ring){const R=6378137;let a=0,n=ring.length;if(n<3)return 0;
+  for(let i=0;i<n;i++){const[lo1,la1]=ring[i],[lo2,la2]=ring[(i+1)%n];
+    a+=(_toRad(lo2)-_toRad(lo1))*(2+Math.sin(_toRad(la1))+Math.sin(_toRad(la2)));}
+  return Math.abs(a*R*R/2)/10000;}
+function parseKML(xml){
+  const blocks=[...xml.matchAll(/<coordinates>([\s\S]*?)<\/coordinates>/gi)].map(m=>m[1]);
+  let total=0,rings=0;
+  for(const b of blocks){const pts=b.trim().split(/\s+/).map(t=>t.split(",").map(Number)).filter(p=>p.length>=2&&!isNaN(p[0])&&!isNaN(p[1]));
+    if(pts.length>=3){total+=ringAreaHa(pts.map(p=>[p[0],p[1]]));rings++;}}
+  return {areaHa:total,rings};
+}
+function stripXml(s){return s.replace(/<[^>]+>/g," ").replace(/\s+/g," ").trim();}
+function iNum(s){const v=parseFloat(String(s).replace(/,/g,""));return isNaN(v)?null:v;}
+function findArea(t,kw){const re=new RegExp(kw+"[^0-9]{0,40}(\\d{1,3}(?:,\\d{3})*(?:\\.\\d+)?)\\s*(?:ha|hectare|hect)","i");const m=t.match(re);return m?iNum(m[1]):null;}
+function findCount(t,kw){const re=new RegExp(kw+"[^0-9]{0,30}(\\d{1,3}(?:,\\d{3})*)","i");const m=t.match(re);return m?iNum(m[1]):null;}
+function extractFigures(t){t=(t||"").replace(/\s+/g," ");
+  return {
+    forestArea: findArea(t,"forest area(?:[^0-9]{0,25}(?:proposed|diversion))?") ?? findArea(t,"area proposed for diversion") ?? findArea(t,"diversion"),
+    totalArea: findArea(t,"total(?: project)? area"),
+    nonForestArea: findArea(t,"non[- ]forest"),
+    caArea: findArea(t,"compensatory afforestation") ?? findArea(t,"\\bca area"),
+    treeCount: findCount(t,"(?:number of |total )?trees?(?:[^0-9]{0,25}(?:felled|felling|enumerat))?")
+  };
+}
+function extractFromTable(rows){
+  let hi=-1;for(let i=0;i<Math.min(rows.length,6);i++){if(rows[i]&&rows[i].some(c=>/[a-z]/i.test(String(c)))){hi=i;break;}}
+  if(hi<0)return {};
+  const hdr=rows[hi].map(c=>String(c).toLowerCase());
+  const colOf=kws=>{for(let j=0;j<hdr.length;j++){if(kws.some(k=>hdr[j].includes(k)))return j;}return -1;};
+  const cF=colOf(["forest area","area (ha)","area(ha)","area proposed","diversion area"]);
+  const cC=colOf(["ca area","compensatory","c.a. area"]);
+  const cT=colOf(["tree","trees"]);
+  const data=rows.slice(hi+1);
+  const val=c=>{if(c<0)return null;const tot=data.find(r=>r&&r.some(cell=>/total/i.test(String(cell))));
+    if(tot&&iNum(tot[c])!=null)return iNum(tot[c]);
+    let s=0,any=false;data.forEach(r=>{const v=iNum(r&&r[c]);if(v!=null){s+=v;any=true;}});return any?s:null;};
+  return {forestArea:val(cF),caArea:val(cC),treeCount:val(cT)};
+}
+function guessKind(name,text){const s=(name+" "+(text||"")).toLowerCase();
+  if(/site inspection|\bsir\b/.test(s))return "SIR";
+  if(/\bdfo\b|divisional forest officer/.test(s))return "DFO";
+  if(/\bcf\b|conservator of forest/.test(s))return "CF";
+  if(/nodal/.test(s))return "Nodal";
+  if(/enumerat|tree list/.test(s))return "Enumeration";
+  if(/land schedule|khasra|khatauni|schedule/.test(s))return "Schedule";
+  if(/application|part.?i\b|form.?a\b/.test(s))return "Application";
+  if(/\.km[lz]$/.test(name.toLowerCase()))return "Spatial";
+  return "";}
+const GRID_FOR={SIR:"Site Inspection Report",DFO:"DFO Recommendation",CF:"CF Recommendation",Nodal:"Nodal Officer Recommendation",Schedule:"Land Schedule",Application:"Application Form"};
+
+let intakeRecords=[];
+async function processBytes(name,u8){
+  const ext=(name.split(".").pop()||"").toLowerCase();
+  const rec={name,ext,type:ext.toUpperCase()||"?",mr:false,kind:"",note:"",figures:null,areaHa:null,scanned:false};
+  try{
+    if(ext==="kml"){const k=parseKML(new TextDecoder().decode(u8));rec.type="KML";rec.mr=true;rec.areaHa=k.areaHa;rec.kind="Spatial";rec.note=k.areaHa.toFixed(2)+" ha ("+k.rings+" polygon)";}
+    else if(ext==="kmz"){await ensureFflate();const files=_fflate.unzipSync(u8);const key=Object.keys(files).find(k=>/\.kml$/i.test(k));
+      if(key){const k=parseKML(new TextDecoder().decode(files[key]));rec.type="KMZ";rec.mr=true;rec.areaHa=k.areaHa;rec.kind="Spatial";rec.note=k.areaHa.toFixed(2)+" ha";}else{rec.type="KMZ";rec.note="No KML inside";}}
+    else if(ext==="xlsx"||ext==="xls"){await ensureXlsx();const wb=_xlsx.read(u8,{type:"array"});const fig={};const sh=[];
+      wb.SheetNames.forEach(n=>{sh.push(n);const rows=_xlsx.utils.sheet_to_json(wb.Sheets[n],{header:1,blankrows:false});const f=extractFromTable(rows);for(const k in f){if(f[k]!=null&&fig[k]==null)fig[k]=f[k];}});
+      rec.type="Spreadsheet";rec.mr=true;rec.figures=fig;rec.kind=guessKind(name,sh.join(" "));rec.note="Sheets: "+sh.join(", ");}
+    else if(ext==="csv"){await ensureXlsx();const wb=_xlsx.read(new TextDecoder().decode(u8),{type:"string"});const rows=_xlsx.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,blankrows:false});
+      rec.type="CSV";rec.mr=true;rec.figures=extractFromTable(rows);rec.kind=guessKind(name,"");}
+    else if(ext==="docx"){await ensureFflate();const files=_fflate.unzipSync(u8);const x=files["word/document.xml"];const t=x?stripXml(new TextDecoder().decode(x)):"";
+      rec.type="DOCX";rec.mr=t.length>0;rec.figures=extractFigures(t);rec.kind=guessKind(name,t);if(!t)rec.note="Empty / unreadable";}
+    else if(ext==="pdf"){const r=await extractPdfText(new Blob([u8]));const t=r.text||"";
+      if(t.replace(/\s/g,"").length>40){rec.type="PDF (text)";rec.mr=true;rec.figures=extractFigures(t);rec.kind=guessKind(name,t);rec.note=r.pages+" page(s)";}
+      else{rec.type="PDF (scanned)";rec.mr=false;rec.scanned=true;rec.kind=guessKind(name,"");rec.note="No text layer — needs manual reading or OCR";}}
+    else if(["png","jpg","jpeg","webp","gif","tif","tiff","bmp"].includes(ext)){rec.type="Image";rec.mr=false;rec.scanned=true;rec.note="Image — needs manual reading or OCR";}
+    else if(ext==="zip"){await ensureFflate();const files=_fflate.unzipSync(u8);const out=[];
+      for(const k of Object.keys(files)){if(k.endsWith("/"))continue;const base=k.split("/").pop();const sub=await processBytes(base,files[k]);out.push(...sub);}return out;}
+    else {rec.note="Not auto-readable in browser";}
+  }catch(e){rec.note="Could not read: "+e.message;}
+  return [rec];
+}
+let backend=null;
+async function detectBackend(){
+  if(backend!==null) return backend;
+  try{const r=await fetch("/api/health",{cache:"no-store"});const j=await r.json();backend=(j&&j.engine==="desktop")?j:false;}
+  catch(e){backend=false;}
+  updateEngineBanner();updateGisBanner();return backend;
+}
+function updateEngineBanner(){const el=$("#engineBanner");if(!el)return;
+  if(backend&&backend.engine==="desktop"){
+    el.innerHTML=`<span style="color:var(--ok);font-weight:700">\u25cf Desktop engine connected</span> \u2014 scanned PDFs &amp; images are OCR-read (${(backend.ocr_langs||[]).join(", ")||"OCR unavailable"}). Full extraction available.`;
+  } else {
+    el.innerHTML=`<span style="color:var(--warn);font-weight:700">\u25cf Browser mode</span> \u2014 reads KML, spreadsheets, Word &amp; digital PDFs on this device. Scanned / photographed pages need the desktop app for OCR.`;
+  }
+}
+async function handleFiles(files){
+  await detectBackend();
+  if(backend&&backend.engine==="desktop") return handleFilesBackend(files);
+  return handleFilesBrowser(files);
+}
+async function handleFilesBackend(fileList){
+  const files=[...fileList];if(!files.length)return;
+  const prog=$("#intakeProg");prog.textContent="Sending "+files.length+" file(s) to the local desktop engine (OCR)\u2026";
+  const fd=new FormData();files.forEach(f=>fd.append("files",f,f.name));
+  try{
+    const res=await fetch("/api/extract",{method:"POST",body:fd});
+    if(!res.ok)throw new Error("HTTP "+res.status);
+    const j=await res.json();intakeRecords.push(...(j.records||[]));
+    prog.textContent="Done. "+intakeRecords.length+" document(s) processed by the desktop engine (OCR enabled).";
+    $("#invWrap").classList.remove("hidden");renderInventory();
+  }catch(e){prog.textContent="Desktop engine error ("+e.message+") \u2014 using browser mode.";backend=false;updateEngineBanner();await handleFilesBrowser(files);}
+}
+async function handleFilesBrowser(fileList){
+  const files=[...fileList];if(!files.length)return;
+  const prog=$("#intakeProg");prog.textContent="Reading "+files.length+" file(s)…";
+  for(let i=0;i<files.length;i++){prog.textContent="Reading "+(i+1)+" of "+files.length+": "+files[i].name;
+    const u8=new Uint8Array(await files[i].arrayBuffer());
+    const recs=await processBytes(files[i].name,u8);intakeRecords.push(...recs);}
+  prog.textContent="Done. "+intakeRecords.length+" document(s) processed.";
+  $("#invWrap").classList.remove("hidden");renderInventory();
+}
+function renderIntake(){ detectBackend(); if(intakeRecords.length){$("#invWrap").classList.remove("hidden");renderInventory();} }
+function renderInventory(){
+  const t=$("#invTbl");
+  t.innerHTML=`<thead><tr><th>File</th><th>Type</th><th>Auto-read</th><th>Likely</th><th>Extracted</th></tr></thead><tbody>${
+    intakeRecords.map(r=>{
+      let ex="";
+      if(r.areaHa!=null) ex="Area "+r.areaHa.toFixed(2)+" ha";
+      else if(r.figures){const p=[];if(r.figures.forestArea!=null)p.push("forest "+r.figures.forestArea+" ha");if(r.figures.totalArea!=null)p.push("total "+r.figures.totalArea+" ha");if(r.figures.caArea!=null)p.push("CA "+r.figures.caArea+" ha");if(r.figures.treeCount!=null)p.push(r.figures.treeCount+" trees");ex=p.join(", ")||"—";}
+      else ex=r.note||"—";
+      return `<tr><td>${esc(r.name)}</td><td>${esc(r.type)}</td>
+        <td class="${r.mr?'mryes':'mrno'}">${r.mr?'Yes':'Manual'}</td>
+        <td>${esc(r.kind||'—')}</td><td>${esc(ex)}</td></tr>`;
+    }).join("")}</tbody>`;
+  renderFigures();
+}
+function aggregateFigures(){
+  const out=[];
+  intakeRecords.forEach(r=>{
+    if(r.areaHa!=null) out.push({label:"KML/KMZ area",value:r.areaHa,unit:"ha",source:r.name,grid:"KML/KMZ Calculated Area"});
+    if(r.figures){const g=GRID_FOR[r.kind]||"";
+      if(r.figures.forestArea!=null)out.push({label:"Forest area",value:r.figures.forestArea,unit:"ha",source:r.name,grid:g});
+      if(r.figures.totalArea!=null)out.push({label:"Total project area",value:r.figures.totalArea,unit:"ha",source:r.name,grid:""});
+      if(r.figures.caArea!=null)out.push({label:"CA area",value:r.figures.caArea,unit:"ha",source:r.name,grid:""});
+      if(r.figures.treeCount!=null)out.push({label:"Tree count",value:r.figures.treeCount,unit:"",source:r.name,grid:""});
+    }
+  });
+  return out;
+}
+function renderFigures(){
+  const figs=aggregateFigures();const w=$("#figWrap");
+  if(!figs.length){w.innerHTML=`<div class="footnote">No figures auto-extracted. Machine-readable files (KML, spreadsheets, Word, digital PDFs) yield figures; scanned files need manual reading.</div>`;return;}
+  w.innerHTML=`<div class="tbl-wrap"><table><thead><tr><th>Figure</th><th>Value</th><th>Source file</th><th>Reconciliation row</th></tr></thead><tbody>${
+    figs.map(f=>`<tr><td>${f.label}</td><td class="figtag">${f.value}${f.unit?" "+f.unit:""}</td><td>${esc(f.source)}</td><td>${f.grid?esc(f.grid):'<span class="footnote">place manually</span>'}</td></tr>`).join("")
+  }</tbody></table></div>`;
+}
+function applyFigures(){
+  const figs=aggregateFigures();let n=0;
+  figs.forEach(f=>{ if(f.grid && f.unit==="ha"){ state.area.rows[f.grid]=String(f.value); n++; }
+    if(f.label==="KML/KMZ area"){ state.prop.kmlArea=String(f.value); } });
+  markDirty();persist();toast(n?("Applied "+n+" figure(s) to reconciliation — please verify"):"No mappable figures; place them manually");
+  if(n) show("area");
+}
+function genIntakeReport(){
+  const figs=aggregateFigures();
+  const manual=intakeRecords.filter(r=>!r.mr);
+  const auto=intakeRecords.filter(r=>r.mr);
+  // forest-area mismatch check
+  const fa=figs.filter(f=>f.label==="Forest area"||f.label==="KML/KMZ area").map(f=>f.value);
+  let mism="";
+  if(fa.length>=2){const mn=Math.min(...fa),mx=Math.max(...fa);if(mx-mn>0.05)mism=`<p style="color:var(--bad);font-weight:600">Forest/KML area figures differ across sources: ${mn} – ${mx} ha. Reconcile before forwarding.</p>`;else mism=`<p style="color:var(--ok);font-weight:600">Forest/KML area figures are consistent (${mn}–${mx} ha).</p>`;}
+  const out=`<div class="report" id="repDoc">
+    <div class="rep-head"><img src="./header-emblem.png" alt="" style="width:56px;height:56px;border-radius:50%;margin:0 auto 8px;display:block">
+      <div class="go">Government of Uttarakhand · Forest, Environment &amp; Climate Change</div>
+      <h3>Document Intake &amp; Extraction Report</h3>
+      <div class="rs">Van Anumodan · ${new Date().toLocaleString()}</div></div>
+    <div class="rep-sec"><h4>Inventory (${intakeRecords.length} document(s))</h4>
+      <ul class="rep-list">${intakeRecords.map(r=>`<li><span class="rid" style="color:${r.mr?'var(--ok)':'var(--warn)'}">${r.mr?'AUTO':'READ'}</span><span>${esc(r.name)} — ${esc(r.type)}${r.kind?" · "+esc(r.kind):""}${r.note?" · "+esc(r.note):""}</span></li>`).join("")}</ul></div>
+    <div class="rep-sec"><h4>Figures extracted (${figs.length})</h4>
+      ${figs.length?`<ul class="rep-list">${figs.map(f=>`<li><span class="rid">${f.label}</span><span>${f.value}${f.unit?" "+f.unit:""} — from ${esc(f.source)}</span></li>`).join("")}</ul>`:`<p style="color:var(--muted)">None auto-extracted.</p>`}
+      ${mism}</div>
+    <div class="rep-sec"><h4>Documents requiring manual reading (${manual.length})</h4>
+      ${manual.length?`<ul class="rep-list">${manual.map(r=>`<li><span class="rid" style="color:var(--warn)">READ</span><span>${esc(r.name)} — ${esc(r.type)}. ${esc(r.note||"")}</span></li>`).join("")}</ul>
+        <p class="footnote">Scanned/image documents have no text layer. Read these manually and record findings in the checklist, or process them through the Phase II back-end OCR.</p>`:`<p style="color:var(--ok);font-weight:600">All uploaded documents were machine-readable.</p>`}</div>
+    <p class="footnote">Auto-extracted figures are a drafting aid and must be verified by the officer before they inform any finding.</p>
+  </div>`;
+  $("#intakeReport").innerHTML=out;$("#printArea").innerHTML=out;
+}
+(function wireDocIntake(){
+  const dz=$("#dropzone"),inp=$("#fileMulti");if(!dz)return;
+  dz.addEventListener("click",()=>inp.click());
+  inp.addEventListener("change",e=>{handleFiles(e.target.files);e.target.value="";});
+  ["dragover","dragenter"].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.add("drag");}));
+  ["dragleave","drop"].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.remove("drag");}));
+  dz.addEventListener("drop",e=>{if(e.dataTransfer&&e.dataTransfer.files)handleFiles(e.dataTransfer.files);});
+  $("#applyFigs").addEventListener("click",applyFigures);
+  $("#genIntake").addEventListener("click",genIntakeReport);
+  $("#clearIntake").addEventListener("click",()=>{intakeRecords=[];$("#invWrap").classList.add("hidden");$("#intakeProg").textContent="";$("#intakeReport").innerHTML="";});
+})();
+
+/* ---- GIS spatial check (uses desktop engine) ---- */
+const GIS_LAYERS=[
+  ["pa","Protected Area","Protected Area intersection/proximity"],
+  ["esz","Eco-Sensitive Zone","ESZ intersection/proximity"],
+  ["tr","Tiger Reserve / CTH","Tiger Reserve / CTH intersection/proximity"],
+  ["cor","Wildlife corridor","Wildlife corridor sensitivity"]
+];
+const GIS_FLAG={
+  tr:{sev:"Critical",label:"Tiger Reserve / Critical Tiger Habitat"},
+  pa:{sev:"Critical",label:"Protected Area (Sanctuary / National Park)"},
+  esz:{sev:"Major",label:"Eco-Sensitive Zone"},
+  cor:{sev:"Major",label:"Wildlife corridor"}
+};
+function _today(){return new Date().toISOString().slice(0,10);}
+function ensureGis(label){ state.gis[label]=state.gis[label]||{res:"Not Checked",val:"",rem:""}; return state.gis[label]; }
+function gStatus(m){const el=$("#gisStatus");if(el)el.textContent=m||"";}
+function updateGisBanner(){const el=$("#gisEngineBanner");if(!el)return;
+  if(backend&&backend.engine==="desktop") el.innerHTML=`<span style="color:var(--ok);font-weight:700">\u25cf Desktop engine connected</span> \u2014 boundary area and layer intersection are computed on the engine.`;
+  else el.innerHTML=`<span style="color:var(--warn);font-weight:700">\u25cf Browser mode</span> \u2014 boundary area is computed here; layer intersection needs the desktop app (VanAnumodan).`;
+}
+async function renderGisPanel(){
+  await detectBackend();
+  const g=$("#gisLayers");
+  if(g && !g.dataset.built){
+    g.innerHTML=GIS_LAYERS.map(l=>`<div class="field"><label>${l[1]} layer</label><input type="file" data-gl="${l[0]}" accept=".geojson,.json,.kml,.kmz"></div>`).join("");
+    g.dataset.built="1";
+  }
+  const fEl=$("#gisFolder"),autoBtn=$("#runGisAuto");
+  if(backend&&backend.engine==="desktop"){
+    try{const j=await (await fetch("/api/layers",{cache:"no-store"})).json();
+      const n=(j.layers||[]).length;
+      if(n){ fEl.innerHTML=`<b>Folder layers (${n}):</b> `+j.layers.map(l=>esc(l.file)+" <span class='mono'>["+esc(l.category)+"]</span>").join(", ")+`<br><span style="opacity:.8">Folder: ${esc(j.dir)}</span>`; if(autoBtn)autoBtn.disabled=false; }
+      else { fEl.innerHTML=`No layers found in the engine folder. Put GeoJSON/KML files in <span class="mono">${esc(j.dir)}</span> (filenames like <span class="mono">tiger_reserve.geojson</span>, <span class="mono">esz.kml</span>) or add a <span class="mono">manifest.json</span>.`; if(autoBtn)autoBtn.disabled=true; }
+    }catch(e){ fEl.textContent="Could not read folder layers."; }
+  } else {
+    fEl.innerHTML=`Folder layers are read by the desktop engine. In browser mode, attach layer files above instead.`;
+    if(autoBtn)autoBtn.disabled=true;
+  }
+}
+async function kmlAreaFromFile(file){
+  const u8=new Uint8Array(await file.arrayBuffer());
+  const ext=(file.name.split(".").pop()||"").toLowerCase();
+  if(ext==="kmz"){await ensureFflate();const files=_fflate.unzipSync(u8);const key=Object.keys(files).find(k=>/\.kml$/i.test(k));if(!key)return null;return parseKML(new TextDecoder().decode(files[key])).areaHa;}
+  return parseKML(new TextDecoder().decode(u8)).areaHa;
+}
+function applyAreaBaseline(areaHa){
+  if(areaHa==null)return;
+  const geo=ensureGis("Proposal polygon geometry valid"); geo.val="Area "+(+areaHa).toFixed(2)+" ha"; if(geo.res==="Not Checked")geo.res=areaHa>0?"Pass":"Fail";
+  const pf=parseFloat(state.prop.forestArea); const am=ensureGis("GIS area matches proposed forest area");
+  am.val="GIS "+(+areaHa).toFixed(2)+" ha"+(!isNaN(pf)?" vs proposed "+pf.toFixed(2)+" ha":"");
+  if(!isNaN(pf)) am.res=Math.abs(areaHa-pf)<=Math.max(0.05,pf*0.01)?"Pass":"Fail";
+}
+function syncGisFlags(agg){
+  agg.forEach(r=>{const meta=GIS_FLAG[r.category];if(!meta)return;const key="GIS:"+r.category;
+    const ex=state.flagsReg.find(f=>f.gisKey===key);
+    if(r.intersects){
+      const def="Proposal intersects "+meta.label+(r.overlap?(" ("+r.overlap+"% overlap)"):"");
+      const action=meta.sev==="Critical"?("Wildlife clearance route (SBWL\u2192NBWL"+(r.category==="tr"?"\u2192NTCA":"")+") required before forwarding."):"Assess additional clearance / mitigation requirement.";
+      if(ex){ex.def=def;ex.severity=meta.sev;ex.action=ex.action||action;if(ex.status==="Closed"){ex.status="Open";ex.closed="";}}
+      else state.flagsReg.push({id:"RF-"+String(state.flagsReg.length+1).padStart(3,"0"),gisKey:key,checkId:"",module:"L Wildlife and Ecology",def,severity:meta.sev,raised:_today(),status:"Open",action,closed:"",closeRem:"",auto:true});
+    } else if(ex && ex.auto && ex.status!=="Closed"){ ex.status="Closed";ex.closed=_today();if(!ex.closeRem)ex.closeRem="No intersection on latest spatial check."; }
+  });
+}
+function applyGisResults(results){
+  // aggregate by category (any intersects; max overlap)
+  const byCat={};
+  results.forEach(r=>{const c=r.category;if(!c||c==="other")return;byCat[c]=byCat[c]||{category:c,intersects:false,overlap:0};
+    if(r.intersects){byCat[c].intersects=true;byCat[c].overlap=Math.max(byCat[c].overlap,r.overlap||0);}});
+  const agg=Object.values(byCat);
+  agg.forEach(r=>{const meta=GIS_LAYERS.find(g=>g[0]===r.category);if(meta){const row=ensureGis(meta[2]);row.val=r.intersects?("Intersects \u2014 "+r.overlap+"% overlap"):"No intersection";}});
+  syncGisFlags(agg);
+  markDirty();persist();renderGIS();renderDashboard();
+}
+function renderGisResult(proposalArea,rows){
+  const el=$("#gisResult");if(!el)return;
+  const body=rows.map(r=>{const st=r.error?`<span class="tstatus neu">error</span>`:(r.intersects?`<span class="tstatus bad">Intersects \u2014 ${r.overlap}%</span>`:`<span class="tstatus ok">No intersection</span>`);
+    return `<tr><td>${esc(r.name)}</td><td>${st}</td></tr>`;}).join("");
+  el.innerHTML=`<div class="tbl-wrap"><table><thead><tr><th>Layer</th><th>Result</th></tr></thead><tbody>
+    <tr><td>Proposal boundary area</td><td class="figtag">${proposalArea!=null?proposalArea+" ha":"\u2014"}</td></tr>${body}</tbody></table></div>`;
+}
+function catName(cat,fallback){const m=GIS_LAYERS.find(g=>g[0]===cat);return m?m[1]:(fallback||cat||"Layer");}
+async function runGisCheck(){
+  const kf=$("#gisKml").files[0]; if(!kf){gStatus("Choose the proposal KML/KMZ first.");return;}
+  await detectBackend();
+  const slots=[...document.querySelectorAll("#gisLayers [data-gl]")].map(inp=>({key:inp.dataset.gl,file:inp.files[0]})).filter(s=>s.file);
+  let areaHa=null; try{areaHa=await kmlAreaFromFile(kf);}catch(e){}
+  applyAreaBaseline(areaHa);
+  if(!(backend&&backend.engine==="desktop")){
+    markDirty();persist();renderGIS();renderDashboard();
+    renderGisResult(areaHa!=null?+areaHa.toFixed(4):null,[]);
+    gStatus(slots.length?"Boundary area applied. Layer intersection needs the desktop engine \u2014 start VanAnumodan.":"Boundary area applied to the checklist.");
+    return;
+  }
+  if(!slots.length){markDirty();persist();renderGIS();renderDashboard();gStatus("Boundary area applied. Attach layers or use folder layers.");return;}
+  gStatus("Running spatial check on the desktop engine\u2026");
+  const fd=new FormData();fd.append("kml",kf,kf.name);slots.forEach(s=>fd.append("layers",s.file,s.file.name));
+  try{const j=await (await fetch("/api/gis-check",{method:"POST",body:fd})).json();
+    if(j.error){gStatus("Engine: "+j.error);return;}
+    const results=(j.layers||[]).map((l,i)=>({category:slots[i]?slots[i].key:l.category,intersects:!!l.intersects,overlap:l.overlap_frac||0,error:l.error,name:catName(slots[i]?slots[i].key:l.category,l.layer)}));
+    applyGisResults(results);
+    renderGisResult(j.proposal_area_ha,results);
+    gStatus("Done. Intersections applied; red flags raised for protected intersections \u2014 set Pass/Fail as assessed.");
+  }catch(e){gStatus("Engine error: "+e.message);}
+}
+async function runGisAuto(){
+  const kf=$("#gisKml").files[0]; if(!kf){gStatus("Choose the proposal KML/KMZ first.");return;}
+  await detectBackend();
+  if(!(backend&&backend.engine==="desktop")){gStatus("Folder layers need the desktop engine (VanAnumodan).");return;}
+  gStatus("Checking against folder layers\u2026");
+  const fd=new FormData();fd.append("kml",kf,kf.name);
+  try{const j=await (await fetch("/api/gis-auto",{method:"POST",body:fd})).json();
+    if(j.error){gStatus("Engine: "+j.error);return;}
+    applyAreaBaseline(j.proposal_area_ha);
+    const results=(j.layers||[]).map(l=>({category:l.category,intersects:!!l.intersects,overlap:l.overlap_frac||0,error:l.error,name:l.layer+" ["+(l.category||"?")+"]"}));
+    applyGisResults(results);
+    renderGisResult(j.proposal_area_ha,results);
+    gStatus("Done. "+results.length+" folder layer(s) checked; red flags raised for protected intersections.");
+  }catch(e){gStatus("Engine error: "+e.message);}
+}
+(function wireGis(){ const b=$("#runGis");if(b)b.addEventListener("click",runGisCheck); const a=$("#runGisAuto");if(a)a.addEventListener("click",runGisAuto); })();
+
+/* save bar */
+$("#saveNow").addEventListener("click",()=>{persist();toast("Saved");});
+// autosave on interval when dirty
+setInterval(()=>{if(dirty)persist();},4000);
+window.addEventListener("beforeunload",()=>{if(dirty)persist();});
+
+/* ---- PWA: install prompt ---- */
+let deferredPrompt=null;
+const isStandalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone===true;
+const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
+window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredPrompt=e;$("#installBtn").classList.remove("hidden");});
+window.addEventListener("appinstalled",()=>{$("#installBtn").classList.add("hidden");deferredPrompt=null;toast("Van Anumodan installed");});
+if(isIOS && !isStandalone) $("#installBtn").classList.remove("hidden");
+$("#installBtn").addEventListener("click",async()=>{
+  if(deferredPrompt){deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;$("#installBtn").classList.add("hidden");}
+  else if(isIOS){alert("To install on iPad/iPhone:\n\n1. Tap the Share button in Safari\n2. Choose “Add to Home Screen”\n3. Tap Add\n\nVan Anumodan then opens full-screen and works offline.");}
+  else {toast("Use your browser menu → Install / Add to Home screen");}
+});
+
+/* ---- PWA: service worker + update flow ---- */
+if("serviceWorker" in navigator){
+  window.addEventListener("load",()=>{
+    navigator.serviceWorker.register("./sw.js").then(reg=>{
+      reg.addEventListener("updatefound",()=>{
+        const nw=reg.installing;
+        if(!nw)return;
+        nw.addEventListener("statechange",()=>{
+          if(nw.state==="installed" && navigator.serviceWorker.controller){
+            if(confirm("A new version of Van Anumodan is available. Reload to update?")) nw.postMessage("SKIP_WAITING");
+          }
+        });
+      });
+    }).catch(()=>{});
+    let refreshing=false;
+    navigator.serviceWorker.addEventListener("controllerchange",()=>{if(refreshing)return;refreshing=true;location.reload();});
+  });
+}
+
+/* init */
+renderDashboard();
+show("dashboard");
+loadPublishedRules(false);
+
+/* splash */
+(function(){
+  const s=document.getElementById("splash");if(!s)return;
+  const hide=()=>{s.classList.add("hide");setTimeout(()=>s.remove(),600);};
+  s.addEventListener("click",hide);
+  window.addEventListener("load",()=>setTimeout(hide,1100));
+  setTimeout(hide,2600); // safety
+})();
+</script>
+</body>
+</html>
