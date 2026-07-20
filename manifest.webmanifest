@@ -1,0 +1,19 @@
+{
+  "name": "Van Anumodan — Forest Diversion Scrutiny",
+  "short_name": "Van Anumodan",
+  "description": "Intelligent scrutiny and decision-support for PARIVESH forest land diversion proposals — Government of Uttarakhand.",
+  "id": "./",
+  "start_url": "./?source=pwa",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0f2e26",
+  "theme_color": "#0f2e26",
+  "lang": "en-IN",
+  "categories": ["government", "productivity", "utilities"],
+  "icons": [
+    { "src": "./icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "./icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" },
+    { "src": "./icon-any-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

@@ -1,7 +1,7 @@
 /* Van Anumodan — service worker
    Bump CACHE_VERSION whenever you change index.html or any shell asset so the
    update rolls out to installed devices on next online launch. */
-const CACHE_VERSION = 'van-anumodan-v1.0.5';
+const CACHE_VERSION = 'van-anumodan-v1.0.6';
 const SHELL = [
   './',
   './index.html',
